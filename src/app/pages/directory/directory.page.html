@@ -1,0 +1,25 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Справочник</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      [animated]="true"
+      placeholder="Поиск по организации, отделу, адресу или телефону"
+      [(ngModel)]="store.directorySearch"
+      show-clear-button="focus"
+    ></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="shell">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Справочник</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <app-page-inset>
+    <app-directory-view></app-directory-view>
+  </app-page-inset>
+</ion-content>

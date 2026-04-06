@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-
-import { ContactsTabViewComponent } from '../../components/contacts-tab-view/contacts-tab-view.component';
+import { IonicModule } from '@ionic/angular';
 
 @Component({
   selector: 'app-favorites-page',
   standalone: true,
-  imports: [ContactsTabViewComponent],
-  template: '<app-contacts-tab-view tab="favorites"></app-contacts-tab-view>',
+  imports: [IonicModule],
+  templateUrl: './favorites.page.html',
+  styleUrls: ['./favorites.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class FavoritesPage {}

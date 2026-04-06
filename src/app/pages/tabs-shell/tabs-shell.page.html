@@ -1,38 +1,5 @@
 <ion-tabs>
-  <div class="tabs-layout">
-    <aside class="side-nav">
-      <a class="side-nav__item" routerLink="/tabs/favorites" routerLinkActive="active">
-        <ion-icon name="star-outline"></ion-icon>
-        <span>Избранное</span>
-      </a>
-      <a class="side-nav__item" routerLink="/tabs/recent" routerLinkActive="active">
-        <ion-icon name="time-outline"></ion-icon>
-        <span>Недавние</span>
-      </a>
-      <a class="side-nav__item" routerLink="/tabs/contacts" routerLinkActive="active">
-        <ion-icon name="people-outline"></ion-icon>
-        <span>Контакты</span>
-      </a>
-      <a class="side-nav__item" routerLink="/tabs/directory" routerLinkActive="active">
-        <ion-icon name="book-outline"></ion-icon>
-        <span>Справочник</span>
-      </a>
-      <a class="side-nav__item" routerLink="/tabs/keypad" routerLinkActive="active">
-        <ion-icon name="keypad-outline"></ion-icon>
-        <span>Клавиатура</span>
-      </a>
-      <a class="side-nav__item side-nav__item--settings" routerLink="/settings" routerLinkActive="active">
-        <ion-icon name="settings-outline"></ion-icon>
-        <span>Настройки</span>
-      </a>
-    </aside>
-
-    <main class="tabs-content">
-      <ion-router-outlet></ion-router-outlet>
-    </main>
-  </div>
-
-  <ion-tab-bar slot="bottom" class="bottom-bar mobile-only">
+  <ion-tab-bar slot="bottom" class="bottom-bar">
     <ion-tab-button tab="favorites" href="/tabs/favorites">
       <ion-icon name="star-outline"></ion-icon>
       <ion-label>Избранное</ion-label>

@@ -1,0 +1,11 @@
+@import '../../shared/workspace-styles';
+
+ion-toolbar {
+  --background: #ffffff;
+  --border-color: rgba(21, 24, 31, 0.08);
+}
+
+.toolbar-icon {
+  width: 36px;
+  height: 36px;
+}

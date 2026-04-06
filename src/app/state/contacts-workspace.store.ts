@@ -35,9 +35,10 @@ export class ContactsWorkspaceStore {
   searchOpen = false;
   searchTerm = '';
   selectionMode = false;
-  viewMode: ViewMode = 'extended';
+  viewMode: ViewMode = 'simple';
   directorySearch = '';
   dialNumber = '';
+  activeCallSource = 'SIM 1';
   addContactPressed = false;
   sheetOpen = false;
   selectedIds = new Set<number>();
@@ -69,6 +70,8 @@ export class ContactsWorkspaceStore {
     { key: 'unknown', label: 'Неизвестные' },
     { key: 'long', label: 'Дольше 10 мин' }
   ];
+
+  readonly callSources = ['SIM 1', 'SIM 2', 'WhatsApp'];
 
   constructor() {
     this.repository.getContacts()
@@ -111,6 +114,10 @@ export class ContactsWorkspaceStore {
 
   setViewMode(mode: ViewMode): void {
     this.viewMode = mode;
+  }
+
+  contactById(contactId: number): ContactCard | null {
+    return this.contacts.find((contact) => contact.id === contactId) ?? null;
   }
 
   openContact(contact: ContactCard): void {
@@ -157,6 +164,26 @@ export class ContactsWorkspaceStore {
     }
 
     return this.visibleContacts(tab).filter((contact) => contact.id !== this.userProfile?.id);
+  }
+
+  recentSource(contact: ContactCard): string {
+    const sources = ['Telegram', 'WhatsApp', 'Skype', 'Звонок на номер 1', 'Звонок на номер 2', 'eSIM'];
+    return sources[contact.id % sources.length];
+  }
+
+  recentCallIcon(contact: ContactCard): string {
+    switch (contact.callType) {
+      case 'incoming':
+        return 'arrow-down-left-box-outline';
+      case 'outgoing':
+        return 'arrow-up-right-box-outline';
+      case 'missed':
+        return 'remove-circle-outline';
+    }
+  }
+
+  isMissedCall(contact: ContactCard): boolean {
+    return contact.callType === 'missed';
   }
 
   groupedListContacts(tab: ContactsTabKey): Array<{ letter: string; contacts: ContactCard[] }> {
@@ -225,6 +252,35 @@ export class ContactsWorkspaceStore {
 
   addDigit(value: string): void {
     this.dialNumber = `${this.dialNumber}${value}`;
+  }
+
+  setCallSource(source: string): void {
+    this.activeCallSource = source;
+  }
+
+  keypadMatches(): ContactCard[] {
+    const query = this.normalizedDialNumber();
+    if (!query) {
+      return [];
+    }
+
+    return this.listContacts('contacts').filter((contact) => this.contactPhoneDigits(contact).includes(query)).slice(0, 12);
+  }
+
+  topKeypadMatch(): ContactCard | null {
+    return this.keypadMatches()[0] ?? null;
+  }
+
+  remainingKeypadMatchesCount(): number {
+    return Math.max(0, this.keypadMatches().length - 1);
+  }
+
+  fillDialFromContact(contact: ContactCard): void {
+    this.dialNumber = this.formatPhoneNumber(this.contactPhoneDigits(contact));
+  }
+
+  contactPhone(contact: ContactCard): string {
+    return this.formatPhoneNumber(this.contactPhoneDigits(contact));
   }
 
   addContact(): void {
@@ -306,5 +362,29 @@ export class ContactsWorkspaceStore {
   private toSeconds(duration: string): number {
     const [minutes, seconds] = duration.split(':').map(Number);
     return (minutes * 60) + seconds;
+  }
+
+  private normalizedDialNumber(): string {
+    return this.dialNumber.replace(/\D/g, '');
+  }
+
+  private contactPhoneDigits(contact: ContactCard): string {
+    const suffix = `${(1000000000 + contact.id).toString().slice(-9)}`;
+    return `79${suffix}`;
+  }
+
+  private formatPhoneNumber(digits: string): string {
+    const trimmed = digits.replace(/\D/g, '').slice(0, 11);
+    if (trimmed.length < 2) {
+      return trimmed ? `+${trimmed}` : '';
+    }
+
+    const country = trimmed.slice(0, 1);
+    const p1 = trimmed.slice(1, 4);
+    const p2 = trimmed.slice(4, 7);
+    const p3 = trimmed.slice(7, 9);
+    const p4 = trimmed.slice(9, 11);
+
+    return `+${country} ${p1}${p2 ? ` ${p2}` : ''}${p3 ? `-${p3}` : ''}${p4 ? `-${p4}` : ''}`.trim();
   }
 }

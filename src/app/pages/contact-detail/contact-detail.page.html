@@ -1,0 +1,63 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button text="" defaultHref="/tabs/contacts"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Контакт</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="shell">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Контакт</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <app-page-inset>
+    <div class="background-glow background-glow-a"></div>
+    <div class="background-glow background-glow-b"></div>
+
+    <ng-container *ngIf="contact as contact">
+      <section class="list-card detail-page-card">
+        <div class="profile-hero">
+          <div class="profile-avatar">{{ contact.lastName[0] }}{{ contact.firstName[0] }}</div>
+          <div>
+            <h2>{{ contact.fullName }}</h2>
+            <p>{{ contact.age }} лет · {{ contact.occupation }} · {{ contact.organization }}</p>
+            <div class="meta-row">
+              <span class="meta-pill">{{ contact.group }}</span>
+              <span class="meta-pill subtle">{{ contact.city }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid detail-info-grid">
+          <article class="info-card">
+            <p class="eyebrow">О контакте</p>
+            <p>{{ contact.note }}</p>
+            <p>Статус: {{ contact.online ? 'online' : 'offline' }}</p>
+            <p>Последний тип звонка: {{ contact.callType }} · {{ contact.duration }}</p>
+          </article>
+
+          <article class="info-card">
+            <p class="eyebrow">Метки</p>
+            <div class="meta-row">
+              <span class="meta-pill tag" *ngFor="let tag of contact.tags">{{ tag }}</span>
+            </div>
+          </article>
+        </div>
+
+        <article class="socials-card">
+          <p class="eyebrow">Соцсети и площадки</p>
+          <a [href]="contact.socials.instagram" target="_blank">Instagram</a>
+          <a [href]="contact.socials.twitter" target="_blank">Twitter / X</a>
+          <a [href]="contact.socials.vk" target="_blank">VK</a>
+          <a [href]="contact.socials.appleMusic" target="_blank">Apple Music</a>
+          <a [href]="contact.socials.youtube" target="_blank">YouTube</a>
+          <a [href]="contact.socials.tiktok" target="_blank">TikTok</a>
+        </article>
+      </section>
+    </ng-container>
+  </app-page-inset>
+</ion-content>

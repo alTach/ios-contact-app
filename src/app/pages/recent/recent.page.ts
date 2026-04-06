@@ -1,12 +1,18 @@
+import { NgFor } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-
-import { ContactsTabViewComponent } from '../../components/contacts-tab-view/contacts-tab-view.component';
+import { RouterLink } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
+import { PageInsetComponent } from '../../components/page-inset/page-inset.component';
+import { ContactsWorkspaceStore } from '../../state/contacts-workspace.store';
 
 @Component({
   selector: 'app-recent-page',
   standalone: true,
-  imports: [ContactsTabViewComponent],
-  template: '<app-contacts-tab-view tab="recent"></app-contacts-tab-view>',
+  imports: [NgFor, IonicModule, RouterLink, PageInsetComponent],
+  templateUrl: './recent.page.html',
+  styleUrls: ['./recent.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class RecentPage {}
+export class RecentPage {
+  constructor(public readonly store: ContactsWorkspaceStore) {}
+}

@@ -1,53 +1,32 @@
-<ion-content [fullscreen]="true" class="shell">
-  <section class="topbar-card">
-    <div>
-      <h1>Справочник</h1>
-      <p class="subtle">{{ store.filteredDirectory().length }} записей справочника</p>
-    </div>
-    <div class="topbar-actions">
-      <a class="topbar-icon" routerLink="/settings" aria-label="Настройки">
-        <ion-icon name="settings-outline"></ion-icon>
-      </a>
-    </div>
-  </section>
+<section class="directory-card">
+  <div class="directory-sections">
+    <section class="directory-section" *ngFor="let group of store.groupedDirectory(); trackBy: store.trackByDirectoryCategory">
+      <div class="letter-heading">
+        <span>{{ group.category }}</span>
+      </div>
 
-  <section class="directory-card">
-    <ion-searchbar
-      animated="true"
-      placeholder="Поиск по организации, отделу, адресу или телефону"
-      [(ngModel)]="store.directorySearch"
-      show-clear-button="focus"
-    ></ion-searchbar>
-
-    <div class="directory-sections">
-      <section class="directory-section" *ngFor="let group of store.groupedDirectory(); trackBy: store.trackByDirectoryCategory">
-        <div class="letter-heading">
-          <span>{{ group.category }}</span>
+      <article class="directory-entry" *ngFor="let entry of group.items; trackBy: store.trackByDirectory">
+        <div class="directory-main">
+          <div>
+            <h3>{{ entry.name }}</h3>
+            <p>{{ entry.department }}</p>
+          </div>
+          <a class="directory-phone" [href]="'tel:' + entry.phone">{{ entry.phone }}</a>
         </div>
 
-        <article class="directory-entry" *ngFor="let entry of group.items; trackBy: store.trackByDirectory">
-          <div class="directory-main">
-            <div>
-              <h3>{{ entry.name }}</h3>
-              <p>{{ entry.department }}</p>
-            </div>
-            <a class="directory-phone" [href]="'tel:' + entry.phone">{{ entry.phone }}</a>
-          </div>
+        <div class="meta-row">
+          <span class="meta-pill subtle">{{ entry.city }}</span>
+          <span class="meta-pill">{{ entry.hours }}</span>
+        </div>
 
-          <div class="meta-row">
-            <span class="meta-pill subtle">{{ entry.city }}</span>
-            <span class="meta-pill">{{ entry.hours }}</span>
-          </div>
+        <p class="directory-address">{{ entry.address }}</p>
 
-          <p class="directory-address">{{ entry.address }}</p>
+        <div class="meta-row">
+          <span class="meta-pill tag" *ngFor="let tag of entry.tags">{{ tag }}</span>
+        </div>
 
-          <div class="meta-row">
-            <span class="meta-pill tag" *ngFor="let tag of entry.tags">{{ tag }}</span>
-          </div>
-
-          <a class="directory-link" [href]="entry.website" target="_blank">Открыть сайт</a>
-        </article>
-      </section>
-    </div>
-  </section>
-</ion-content>
+        <a class="directory-link" [href]="entry.website" target="_blank">Открыть сайт</a>
+      </article>
+    </section>
+  </div>
+</section>

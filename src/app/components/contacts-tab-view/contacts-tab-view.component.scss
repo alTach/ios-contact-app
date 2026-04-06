@@ -1,1 +1,24 @@
 @import '../../shared/workspace-styles';
+
+:host {
+  display: block;
+}
+
+ion-toolbar {
+  --background: rgba(255, 255, 255, 0.92);
+  --border-color: rgba(21, 24, 31, 0.08);
+}
+
+.toolbar-icon {
+  width: 36px;
+  height: 36px;
+}
+
+.search-toolbar {
+  --padding-start: 8px;
+  --padding-end: 8px;
+}
+
+.ellipsis-button {
+  --color: var(--ink);
+}

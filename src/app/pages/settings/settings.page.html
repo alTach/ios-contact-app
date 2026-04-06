@@ -1,40 +1,45 @@
-<ion-content [fullscreen]="true" class="settings-shell">
-  <section class="settings-layout">
-    <section class="topbar-card">
-      <div>
-        <ion-back-button class="settings-back-button" text="" defaultHref="/tabs/contacts"></ion-back-button>
-        <h1>Настройки</h1>
-        <p class="subtle">Синхронизация, экспорт и режим отображения</p>
-      </div>
-    </section>
+<div class="ion-page">
+  <ion-header [translucent]="true">
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-back-button defaultHref="/tabs/contacts" text=""></ion-back-button>
+      </ion-buttons>
+      <ion-title>Настройки</ion-title>
+    </ion-toolbar>
+  </ion-header>
 
-    <section class="settings-card">
-      <section class="settings-section">
-        <p class="eyebrow">1. Синхронизация</p>
-        <div class="settings-list">
-          <article class="settings-item" *ngFor="let provider of syncProviders">
-            <div>
-              <h3>{{ provider.title }}</h3>
-              <p>{{ provider.description }}</p>
+  <ion-content [fullscreen]="true" class="settings-shell">
+    <app-page-inset>
+      <section class="settings-layout">
+        <section class="settings-card">
+          <section class="settings-section">
+            <p class="eyebrow">1. Синхронизация</p>
+            <div class="settings-list">
+              <article class="settings-item" *ngFor="let provider of syncProviders">
+                <div>
+                  <h3>{{ provider.title }}</h3>
+                  <p>{{ provider.description }}</p>
+                </div>
+                <ion-toggle [checked]="provider.enabled"></ion-toggle>
+              </article>
             </div>
-            <ion-toggle [checked]="provider.enabled"></ion-toggle>
-          </article>
-        </div>
-      </section>
+          </section>
 
-      <section class="settings-section">
-        <p class="eyebrow">Кого синхронизировать</p>
-        <div class="chip-row">
-          <span class="chip-button static" *ngFor="let scope of syncScopes">{{ scope }}</span>
-        </div>
-      </section>
+          <section class="settings-section">
+            <p class="eyebrow">Кого синхронизировать</p>
+            <div class="chip-row">
+              <span class="chip-button static" *ngFor="let scope of syncScopes">{{ scope }}</span>
+            </div>
+          </section>
 
-      <section class="settings-section">
-        <p class="eyebrow">Экспорт</p>
-        <div class="chip-row">
-          <span class="chip-button static" *ngFor="let option of exportOptions">{{ option }}</span>
-        </div>
+          <section class="settings-section">
+            <p class="eyebrow">Экспорт</p>
+            <div class="chip-row">
+              <span class="chip-button static" *ngFor="let option of exportOptions">{{ option }}</span>
+            </div>
+          </section>
+        </section>
       </section>
-    </section>
-  </section>
-</ion-content>
+    </app-page-inset>
+  </ion-content>
+</div>

@@ -1,0 +1,98 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Контакты</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="store.toggleSearch()" aria-label="Поиск">
+        <ion-icon slot="icon-only" name="search-outline"></ion-icon>
+      </ion-button>
+      <ion-button id="contacts-menu-trigger" fill="clear" aria-label="Ещё">
+        <ion-icon slot="icon-only" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar *ngIf="store.searchOpen">
+    <ion-searchbar
+      #searchInput
+      [animated]="true"
+      placeholder="Поиск по ФИО, организации, тегам"
+      [(ngModel)]="store.searchTerm"
+      show-clear-button="focus"
+    ></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="shell">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Контакты</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <app-page-inset>
+    <div class="background-glow background-glow-a"></div>
+    <div class="background-glow background-glow-b"></div>
+    <app-contacts-tab-view tab="contacts"></app-contacts-tab-view>
+  </app-page-inset>
+</ion-content>
+
+<ion-popover trigger="contacts-menu-trigger" triggerAction="click" alignment="end" side="bottom">
+  <ng-template>
+    <div class="contacts-menu">
+      <p class="contacts-menu__label">Режим отображения</p>
+
+      <div class="display-mode-tabs mode-preview-grid" role="radiogroup" aria-label="Режим отображения">
+        <button
+          type="button"
+          class="mode-preview"
+          [class.active]="store.viewMode === 'simple'"
+          (click)="store.setViewMode('simple')"
+          aria-label="Простой режим"
+        >
+          <div class="mode-preview__frame mode-preview__frame--simple">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="mode-preview__meta">
+            <span>Простой</span>
+            <span class="mode-preview__radio" [class.active]="store.viewMode === 'simple'"></span>
+          </div>
+        </button>
+
+        <button
+          type="button"
+          class="mode-preview"
+          [class.active]="store.viewMode === 'extended'"
+          (click)="store.setViewMode('extended')"
+          aria-label="Универсальный режим"
+        >
+          <div class="mode-preview__frame mode-preview__frame--extended">
+            <span class="avatar-dot"></span>
+            <div class="text-lines">
+              <span></span>
+              <span></span>
+            </div>
+            <span class="avatar-dot"></span>
+            <div class="text-lines">
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+          <div class="mode-preview__meta">
+            <span>Универсальный</span>
+            <span class="mode-preview__radio" [class.active]="store.viewMode === 'extended'"></span>
+          </div>
+        </button>
+      </div>
+
+      <div class="contacts-menu__divider"></div>
+
+      <a class="contacts-menu__row" routerLink="/settings" (click)="closeMenu()">
+        <ion-icon name="settings-outline"></ion-icon>
+        <span>Настройки</span>
+      </a>
+    </div>
+  </ng-template>
+</ion-popover>

@@ -42,6 +42,10 @@ export const appRoutes: Routes = [
     loadComponent: () => import('./pages/settings/settings.page').then((module) => module.SettingsPage)
   },
   {
+    path: 'contact/:id',
+    loadComponent: () => import('./pages/contact-detail/contact-detail.page').then((module) => module.ContactDetailPage)
+  },
+  {
     path: '**',
     redirectTo: 'tabs/contacts'
   }

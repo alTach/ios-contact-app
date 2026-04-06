@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <title>Contacts Functional Mockup</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: sans-serif;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: #fff;
+        color: #111;
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      .app {
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        border-right: 1px solid #ccc;
+        padding: 12px;
+      }
+
+      .sidebar button,
+      .tabbar button,
+      .toolbar button,
+      .actions button {
+        width: 100%;
+        text-align: left;
+        padding: 10px 12px;
+        border: 1px solid #ccc;
+        background: #fff;
+        cursor: pointer;
+      }
+
+      .sidebar button.active,
+      .tabbar button.active {
+        background: #eee;
+        font-weight: 700;
+      }
+
+      .main {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+
+      .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        border-bottom: 1px solid #ccc;
+        position: sticky;
+        top: 0;
+        background: #fff;
+      }
+
+      .toolbar,
+      .filters,
+      .settings,
+      .directory,
+      .list,
+      .keypad,
+      .portal,
+      .sheet,
+      .profile {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .toolbar,
+      .filters,
+      .actions {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .toolbar button,
+      .actions button {
+        width: auto;
+      }
+
+      .searchbar {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ccc;
+      }
+
+      .content {
+        display: grid;
+        grid-template-columns: 1fr 32px;
+        min-height: 0;
+      }
+
+      .list {
+        overflow: auto;
+        min-height: 0;
+      }
+
+      .row,
+      .directory-item,
+      .profile-card,
+      .portal-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+      }
+
+      .avatar {
+        width: 42px;
+        height: 42px;
+        border: 1px solid #999;
+        display: grid;
+        place-items: center;
+        flex: none;
+      }
+
+      .stretch {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .alphabet {
+        border-left: 1px solid #ccc;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding-top: 8px;
+        gap: 4px;
+      }
+
+      .alphabet button {
+        width: 24px;
+        height: 24px;
+        border: 1px solid #ccc;
+        background: #fff;
+        cursor: pointer;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .detail {
+        position: fixed;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 360px;
+        background: #fff;
+        border-left: 1px solid #ccc;
+        overflow: auto;
+        padding: 12px;
+      }
+
+      .sheet {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #fff;
+        border-top: 1px solid #ccc;
+      }
+
+      .tabbar {
+        display: none;
+      }
+
+      .section-title {
+        padding: 8px 0;
+        font-weight: 700;
+      }
+
+      @media (max-width: 800px) {
+        .app {
+          grid-template-columns: 1fr;
+        }
+
+        .sidebar {
+          display: none;
+        }
+
+        .tabbar {
+          display: grid;
+          grid-template-columns: repeat(5, 1fr);
+          position: fixed;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: #fff;
+          border-top: 1px solid #ccc;
+        }
+
+        .tabbar button {
+          text-align: center;
+          border: 0;
+          border-right: 1px solid #eee;
+          padding: 10px 4px;
+        }
+
+        .main {
+          padding-bottom: 56px;
+        }
+
+        .content {
+          grid-template-columns: 1fr;
+        }
+
+        .alphabet {
+          display: none;
+        }
+
+        .detail {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <button data-tab="contacts" class="active">Контакты</button>
+        <button data-tab="favorites">Избранные</button>
+        <button data-tab="recent">Недавние</button>
+        <button data-tab="directory">Справочник</button>
+        <button data-tab="keypad">Клавиатура</button>
+        <button data-tab="settings">Настройки</button>
+      </aside>
+
+      <main class="main">
+        <div class="header">
+          <strong id="title">Контакты</strong>
+          <div class="actions">
+            <button id="search-toggle">Поиск</button>
+            <button id="menu-toggle">...</button>
+          </div>
+        </div>
+
+        <div id="search-wrap" class="toolbar hidden">
+          <input id="search-input" class="searchbar" placeholder="Поиск">
+        </div>
+
+        <section id="contacts-view">
+          <div class="toolbar">
+            <select id="group-select">
+              <option>Все</option>
+              <option>Семья</option>
+              <option>Альбанк</option>
+              <option>Европлан Банк</option>
+              <option>Русский Стандарт</option>
+              <option>Школа 74</option>
+              <option>Школа 213</option>
+              <option>Школа 599</option>
+              <option>Универ</option>
+            </select>
+            <button id="simple-mode">Простой</button>
+            <button id="extended-mode">Расширенный</button>
+            <button id="add-contact">Добавить контакт</button>
+          </div>
+
+          <div id="portal" class="portal">
+            <div class="portal-card">
+              <div class="stretch">
+                <strong>Найдены дубликаты</strong>
+                <div>Можно объединить 3 контакта</div>
+              </div>
+              <button id="portal-work">Поработать</button>
+              <button id="portal-dismiss">Отклонить</button>
+            </div>
+          </div>
+
+          <div class="content">
+            <div id="contact-list" class="list"></div>
+            <div id="alphabet" class="alphabet"></div>
+          </div>
+        </section>
+
+        <section id="favorites-view" class="hidden">
+          <div class="list" id="favorites-list"></div>
+        </section>
+
+        <section id="recent-view" class="hidden">
+          <div class="filters">
+            <button data-filter="all" class="filter active">Все</button>
+            <button data-filter="incoming" class="filter">Входящие</button>
+            <button data-filter="outgoing" class="filter">Исходящие</button>
+            <button data-filter="missed" class="filter">Пропущенные</button>
+          </div>
+          <div class="list" id="recent-list"></div>
+        </section>
+
+        <section id="directory-view" class="hidden">
+          <div class="directory" id="directory-list"></div>
+        </section>
+
+        <section id="keypad-view" class="hidden">
+          <div class="keypad">
+            <div id="dial-output" class="section-title">+7</div>
+            <div class="actions">
+              <button data-digit="1">1</button>
+              <button data-digit="2">2</button>
+              <button data-digit="3">3</button>
+              <button data-digit="4">4</button>
+              <button data-digit="5">5</button>
+              <button data-digit="6">6</button>
+              <button data-digit="7">7</button>
+              <button data-digit="8">8</button>
+              <button data-digit="9">9</button>
+              <button data-digit="*">*</button>
+              <button data-digit="0">0</button>
+              <button data-digit="#">#</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="settings-view" class="hidden">
+          <div class="settings">
+            <div class="section-title">Синхронизация</div>
+            <label><input type="checkbox" checked> Google</label><br>
+            <label><input type="checkbox" checked> Apple</label><br>
+            <label><input type="checkbox"> Samsung</label><br><br>
+            <div class="section-title">Экспорт</div>
+            <button>CSV</button>
+            <button>vCard</button>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <div class="tabbar">
+      <button data-tab="favorites">Избранные</button>
+      <button data-tab="recent">Недавние</button>
+      <button data-tab="contacts" class="active">Контакты</button>
+      <button data-tab="directory">Справочник</button>
+      <button data-tab="keypad">Клавиатура</button>
+    </div>
+
+    <aside id="detail" class="detail hidden"></aside>
+
+    <section id="sheet" class="sheet hidden">
+      <div class="section-title">Обработка дубликатов</div>
+      <div>Контакты с совпадающими данными:</div>
+      <ul>
+        <li>Цой Виктор / Цой Виктор Сергеевич</li>
+        <li>Громов Илья / Илья Громов</li>
+        <li>МФЦ Тверской / Мои документы Тверской</li>
+      </ul>
+      <div class="actions">
+        <button id="sheet-close">Закрыть</button>
+        <button id="sheet-merge">Объединить</button>
+      </div>
+    </section>
+
+    <script>
+      const contacts = [
+        { id: 1, fullName: 'Цой Виктор', group: 'Семья', org: 'Кино', city: 'Санкт-Петербург', callType: 'incoming' },
+        { id: 2, fullName: 'Шевчук Юрий', group: 'Альбанк', org: 'ДДТ', city: 'Уфа', callType: 'outgoing' },
+        { id: 3, fullName: 'Рамазанова Земфира', group: 'Русский Стандарт', org: 'Zemfira Live', city: 'Москва', callType: 'missed' },
+        { id: 4, fullName: 'Громов Илья', group: 'Европлан Банк', org: 'IT', city: 'Москва', callType: 'incoming' },
+        { id: 5, fullName: 'Каримова София', group: 'Универ', org: 'Media', city: 'Казань', callType: 'outgoing' }
+      ];
+
+      const directory = [
+        { name: 'МФЦ Тверской', type: 'МФЦ', phone: '+7 495 200-20-01' },
+        { name: 'Отдел полиции Центрального района', type: 'Полиция', phone: '+7 495 100-10-01' },
+        { name: 'Городская поликлиника №12', type: 'Поликлиника', phone: '+7 495 300-30-01' },
+        { name: 'Городская аптека 24', type: 'Аптека', phone: '+7 495 400-40-01' }
+      ];
+
+      const state = {
+        tab: 'contacts',
+        filter: 'all',
+        query: '',
+        extended: false,
+        dial: '+7'
+      };
+
+      const views = {
+        contacts: document.getElementById('contacts-view'),
+        favorites: document.getElementById('favorites-view'),
+        recent: document.getElementById('recent-view'),
+        directory: document.getElementById('directory-view'),
+        keypad: document.getElementById('keypad-view'),
+        settings: document.getElementById('settings-view')
+      };
+
+      function initials(name) {
+        return name.split(' ').slice(0, 2).map((part) => part[0]).join('');
+      }
+
+      function renderContacts() {
+        const query = state.query.toLowerCase();
+        const filtered = contacts.filter((item) => item.fullName.toLowerCase().includes(query));
+        const list = document.getElementById('contact-list');
+        const favorites = document.getElementById('favorites-list');
+        const recent = document.getElementById('recent-list');
+        list.innerHTML = '';
+        favorites.innerHTML = '';
+        recent.innerHTML = '';
+
+        filtered.forEach((item) => {
+          const row = document.createElement('button');
+          row.className = 'row';
+          row.innerHTML = state.extended
+            ? '<div class="avatar">' + initials(item.fullName) + '</div>'
+            : '<div class="stretch">' + item.fullName + '</div>';
+          row.onclick = () => showDetail(item);
+          list.appendChild(row);
+
+          if (item.id <= 2) {
+            favorites.appendChild(row.cloneNode(true));
+          }
+
+          if (state.filter === 'all' || state.filter === item.callType) {
+            const recentRow = document.createElement('button');
+            recentRow.className = 'row';
+            recentRow.innerHTML = '<div class="stretch">' + item.fullName + ' · ' + item.callType + '</div>';
+            recentRow.onclick = () => showDetail(item);
+            recent.appendChild(recentRow);
+          }
+        });
+
+        const alphabet = document.getElementById('alphabet');
+        alphabet.innerHTML = '';
+        [...new Set(filtered.map((item) => item.fullName[0]))].forEach((letter) => {
+          const button = document.createElement('button');
+          button.textContent = letter;
+          button.onclick = () => {
+            const target = [...list.children].find((row) => row.textContent.trim().startsWith(letter));
+            if (target) {
+              target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+          };
+          alphabet.appendChild(button);
+        });
+      }
+
+      function renderDirectory() {
+        document.getElementById('directory-list').innerHTML = directory.map((item) =>
+          '<div class="directory-item"><div class="stretch"><strong>' + item.name + '</strong><div>' + item.type + '</div></div><div>' + item.phone + '</div></div>'
+        ).join('');
+      }
+
+      function showDetail(item) {
+        const detail = document.getElementById('detail');
+        detail.classList.remove('hidden');
+        detail.innerHTML =
+          '<div class="actions"><button id="close-detail">Закрыть</button></div>' +
+          '<div class="profile-card"><div class="avatar">' + initials(item.fullName) + '</div><div class="stretch"><strong>' + item.fullName + '</strong><div>' + item.org + '</div><div>' + item.city + '</div></div></div>';
+        document.getElementById('close-detail').onclick = () => detail.classList.add('hidden');
+      }
+
+      function activateTab(tab) {
+        state.tab = tab;
+        Object.entries(views).forEach(([key, node]) => node.classList.toggle('hidden', key !== tab));
+        document.querySelectorAll('[data-tab]').forEach((button) => {
+          button.classList.toggle('active', button.getAttribute('data-tab') === tab);
+        });
+        document.getElementById('title').textContent = ({
+          contacts: 'Контакты',
+          favorites: 'Избранные',
+          recent: 'Недавние',
+          directory: 'Справочник',
+          keypad: 'Клавиатура',
+          settings: 'Настройки'
+        })[tab];
+      }
+
+      document.querySelectorAll('[data-tab]').forEach((button) => {
+        button.addEventListener('click', () => activateTab(button.getAttribute('data-tab')));
+      });
+
+      document.getElementById('search-toggle').onclick = () => {
+        document.getElementById('search-wrap').classList.toggle('hidden');
+        document.getElementById('search-input').focus();
+      };
+
+      document.getElementById('search-input').oninput = (event) => {
+        state.query = event.target.value;
+        renderContacts();
+      };
+
+      document.getElementById('simple-mode').onclick = () => {
+        state.extended = false;
+        renderContacts();
+      };
+
+      document.getElementById('extended-mode').onclick = () => {
+        state.extended = true;
+        renderContacts();
+      };
+
+      document.querySelectorAll('.filter').forEach((button) => {
+        button.onclick = () => {
+          state.filter = button.dataset.filter;
+          document.querySelectorAll('.filter').forEach((item) => item.classList.remove('active'));
+          button.classList.add('active');
+          renderContacts();
+        };
+      });
+
+      document.querySelectorAll('[data-digit]').forEach((button) => {
+        button.onclick = () => {
+          state.dial += button.dataset.digit;
+          document.getElementById('dial-output').textContent = state.dial;
+        };
+      });
+
+      document.getElementById('portal-dismiss').onclick = () => {
+        document.getElementById('portal').classList.add('hidden');
+      };
+
+      document.getElementById('portal-work').onclick = () => {
+        document.getElementById('sheet').classList.remove('hidden');
+      };
+
+      document.getElementById('sheet-close').onclick = () => {
+        document.getElementById('sheet').classList.add('hidden');
+      };
+
+      document.getElementById('sheet-merge').onclick = () => {
+        document.getElementById('sheet').classList.add('hidden');
+        document.getElementById('portal').classList.add('hidden');
+      };
+
+      document.getElementById('add-contact').onclick = () => {
+        alert('Здесь может открываться форма добавления контакта');
+      };
+
+      renderContacts();
+      renderDirectory();
+      activateTab('contacts');
+    </script>
+  </body>
+  </html>

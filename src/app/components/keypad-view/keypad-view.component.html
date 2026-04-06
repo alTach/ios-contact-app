@@ -1,37 +1,109 @@
-<ion-content [fullscreen]="true" class="shell">
-  <section class="topbar-card">
-    <div>
-      <h1>Клавиши</h1>
-      <p class="subtle">Быстрый набор номера</p>
-    </div>
-    <div class="topbar-actions">
-      <a class="topbar-icon" routerLink="/settings" aria-label="Настройки">
-        <ion-icon name="settings-outline"></ion-icon>
-      </a>
-    </div>
-  </section>
+<section class="dialer-card">
+  <div class="dialer-toolbar">
+    <ion-select
+      interface="popover"
+      [value]="store.activeCallSource"
+      (ionChange)="store.setCallSource($event.detail.value)"
+      aria-label="Источник звонка"
+    >
+      <ion-select-option *ngFor="let source of store.callSources" [value]="source">{{ source }}</ion-select-option>
+    </ion-select>
 
-  <section class="dialer-card">
-    <p class="eyebrow">Набор номера</p>
-    <div class="dial-display">{{ store.dialNumber || '+7 (___) ___-__-__' }}</div>
-    <div class="dial-grid">
-      <button class="dial-key" (click)="store.addDigit('1')"><strong>1</strong></button>
-      <button class="dial-key" (click)="store.addDigit('2')"><strong>2</strong><span>ABC</span></button>
-      <button class="dial-key" (click)="store.addDigit('3')"><strong>3</strong><span>DEF</span></button>
-      <button class="dial-key" (click)="store.addDigit('4')"><strong>4</strong><span>GHI</span></button>
-      <button class="dial-key" (click)="store.addDigit('5')"><strong>5</strong><span>JKL</span></button>
-      <button class="dial-key" (click)="store.addDigit('6')"><strong>6</strong><span>MNO</span></button>
-      <button class="dial-key" (click)="store.addDigit('7')"><strong>7</strong><span>PQRS</span></button>
-      <button class="dial-key" (click)="store.addDigit('8')"><strong>8</strong><span>TUV</span></button>
-      <button class="dial-key" (click)="store.addDigit('9')"><strong>9</strong><span>WXYZ</span></button>
-      <button class="dial-key" (click)="store.addDigit('*')"><strong>*</strong></button>
-      <button class="dial-key zero" (click)="store.addDigit('0')"><strong>0</strong><span>+</span></button>
-      <button class="dial-key" (click)="store.addDigit('#')"><strong>#</strong></button>
+    <ion-button
+      *ngIf="store.dialNumber"
+      id="add-contact-trigger"
+      fill="clear"
+      class="add-contact-inline"
+      aria-label="Добавить контакт"
+    >
+      <ion-icon name="person-add-outline"></ion-icon>
+    </ion-button>
+  </div>
+
+  <p class="eyebrow">Набор номера</p>
+  <div class="dial-display">{{ store.dialNumber || '+7 (___) ___-__-__' }}</div>
+
+  <div class="dial-suggestions">
+    <div class="dial-suggestion-row dial-suggestion-row--primary">
+      <button
+        *ngIf="store.topKeypadMatch() as contact; else emptyPrimary"
+        class="dial-match"
+        type="button"
+        (click)="store.fillDialFromContact(contact)"
+      >
+        <span>{{ contact.fullName }}</span>
+        <small>{{ store.contactPhone(contact) }}</small>
+      </button>
+      <ng-template #emptyPrimary>
+        <span class="dial-suggestion-placeholder"></span>
+      </ng-template>
     </div>
-    <div class="dial-actions">
-      <ion-button fill="outline" shape="round" (click)="store.removeDigit()">Удалить</ion-button>
-      <ion-button color="success" shape="round">Позвонить</ion-button>
-      <ion-button fill="clear" shape="round" (click)="store.clearDial()">Очистить</ion-button>
+
+    <div class="dial-suggestion-divider"></div>
+
+    <div class="dial-suggestion-row dial-suggestion-row--secondary">
+      <ng-container *ngIf="store.dialNumber">
+        <button
+          *ngIf="store.remainingKeypadMatchesCount() > 0; else directoryLookup"
+          class="dial-more"
+          type="button"
+        >
+          Еще {{ store.remainingKeypadMatchesCount() }} контактов
+        </button>
+        <ng-template #directoryLookup>
+          <a class="dial-directory-link" routerLink="/tabs/directory">Найти в справочнике</a>
+        </ng-template>
+      </ng-container>
     </div>
-  </section>
-</ion-content>
+  </div>
+
+  <div class="dial-grid">
+    <button class="dial-key" (click)="store.addDigit('1')"><strong>1</strong></button>
+    <button class="dial-key" (click)="store.addDigit('2')"><strong>2</strong><span>ABC</span></button>
+    <button class="dial-key" (click)="store.addDigit('3')"><strong>3</strong><span>DEF</span></button>
+    <button class="dial-key" (click)="store.addDigit('4')"><strong>4</strong><span>GHI</span></button>
+    <button class="dial-key" (click)="store.addDigit('5')"><strong>5</strong><span>JKL</span></button>
+    <button class="dial-key" (click)="store.addDigit('6')"><strong>6</strong><span>MNO</span></button>
+    <button class="dial-key" (click)="store.addDigit('7')"><strong>7</strong><span>PQRS</span></button>
+    <button class="dial-key" (click)="store.addDigit('8')"><strong>8</strong><span>TUV</span></button>
+    <button class="dial-key" (click)="store.addDigit('9')"><strong>9</strong><span>WXYZ</span></button>
+    <button class="dial-key" (click)="store.addDigit('*')"><strong>*</strong></button>
+    <button class="dial-key zero" (click)="store.addDigit('0')"><strong>0</strong><span>+</span></button>
+    <button class="dial-key" (click)="store.addDigit('#')"><strong>#</strong></button>
+  </div>
+
+  <div class="dial-bottom-row">
+    <div class="dial-bottom-slot"></div>
+
+    <button class="call-button" type="button" aria-label="Позвонить">
+      <ion-icon name="call-outline"></ion-icon>
+    </button>
+
+    <div class="dial-bottom-slot dial-bottom-slot--end">
+      <button
+        *ngIf="store.dialNumber"
+        class="erase-button"
+        type="button"
+        (click)="store.removeDigit()"
+        aria-label="Стереть"
+      >
+        Стереть
+      </button>
+    </div>
+  </div>
+</section>
+
+<ion-popover trigger="add-contact-trigger" triggerAction="click" alignment="end" side="bottom">
+  <ng-template>
+    <div class="dial-add-menu">
+      <button class="dial-add-menu__item" type="button">
+        <ion-icon name="person-add-outline"></ion-icon>
+        <span>Создать контакт</span>
+      </button>
+      <button class="dial-add-menu__item" type="button">
+        <ion-icon name="person-outline"></ion-icon>
+        <span>Добавить в имеющийся</span>
+      </button>
+    </div>
+  </ng-template>
+</ion-popover>

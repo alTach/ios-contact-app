@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -9,7 +9,7 @@ import { ContactsTabKey, ContactsWorkspaceStore } from '../../state/contacts-wor
 @Component({
   selector: 'app-contacts-tab-view',
   standalone: true,
-  imports: [CommonModule, FormsModule, IonicModule, RouterLink],
+  imports: [NgFor, NgIf, FormsModule, IonicModule, RouterLink],
   templateUrl: './contacts-tab-view.component.html',
   styleUrls: ['./contacts-tab-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -39,5 +39,9 @@ export class ContactsTabViewComponent implements AfterViewInit {
 
   get subtitle(): string {
     return `${this.store.visibleContacts(this.tab).length} из ${this.store.contacts.length} контактов`;
+  }
+
+  get isContactsTab(): boolean {
+    return this.tab === 'contacts';
   }
 }

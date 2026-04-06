@@ -1,16 +1,16 @@
 :host {
   --ink: #15181f;
   --muted: #6d7482;
-  --surface: rgba(255, 255, 255, 0.92);
+  --surface: #ffffff;
   --surface-strong: #ffffff;
-  --surface-soft: #f3f4f6;
+  --surface-soft: #ffffff;
   --line: rgba(21, 24, 31, 0.08);
   --accent: #111111;
-  --shadow: 0 12px 28px rgba(15, 18, 24, 0.08);
+  --shadow: none;
 }
 
 ion-content.settings-shell {
-  --background: #f3f4f6;
+  --background: #ffffff;
 }
 
 .settings-layout {
@@ -18,28 +18,26 @@ ion-content.settings-shell {
   color: var(--ink);
 }
 
+ion-toolbar {
+  --background: #ffffff;
+  --border-color: rgba(21, 24, 31, 0.08);
+}
+
 .topbar-card,
 .settings-card,
 .settings-item {
   background: var(--surface);
-  border: 1px solid var(--line);
-  box-shadow: var(--shadow);
+  border: 0;
+  box-shadow: none;
 }
 
-.topbar-card,
 .settings-card {
-  border-radius: 14px;
-  padding: 18px;
+  border-radius: 0;
+  padding: 0;
 }
 
 .settings-card {
   margin-top: 16px;
-}
-
-.settings-back-button {
-  display: inline-flex;
-  margin: 0 0 8px -6px;
-  --color: var(--ink);
 }
 
 h1,
@@ -75,8 +73,9 @@ h3 {
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  border-radius: 12px;
-  padding: 16px;
+  border-radius: 0;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--line);
 }
 
 .chip-row {
@@ -87,9 +86,10 @@ h3 {
 }
 
 .chip-button {
-  border-radius: 10px;
+  border-radius: 999px;
   padding: 10px 14px;
-  background: var(--surface-soft);
+  background: transparent;
+  border: 1px solid var(--line);
 }
 
 @media (max-width: 720px) {

@@ -1,7 +1,7 @@
 import { mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 
-const TOTAL_CONTACTS = 846;
+const TOTAL_CONTACTS = 36;
 const outputPath = resolve(process.cwd(), 'src/assets/data/contacts.json');
 
 const groups = [

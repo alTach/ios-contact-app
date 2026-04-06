@@ -1,0 +1,43 @@
+<ion-header [translucent]="true">
+  <ion-toolbar>
+    <ion-title>Недавние</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="shell">
+  <ion-header collapse="condense">
+    <ion-toolbar>
+      <ion-title size="large">Недавние</ion-title>
+    </ion-toolbar>
+  </ion-header>
+
+  <app-page-inset>
+    <div class="background-glow background-glow-a"></div>
+    <div class="background-glow background-glow-b"></div>
+
+    <section class="list-card recent-list-card">
+      <ion-item
+        detail="false"
+        *ngFor="let contact of store.listContacts('recent'); trackBy: store.trackByContact"
+        class="recent-item"
+      >
+        <div class="avatar" slot="start">{{ contact.lastName[0] }}{{ contact.firstName[0] }}</div>
+        <ion-label>
+          <h2 [class.missed-name]="store.isMissedCall(contact)">{{ contact.fullName }}</h2>
+          <p class="recent-meta">
+            <ion-icon [name]="store.recentCallIcon(contact)"></ion-icon>
+            <span>{{ store.recentSource(contact) }}</span>
+          </p>
+        </ion-label>
+        <ion-button
+          slot="end"
+          fill="clear"
+          [routerLink]="['/contact', contact.id]"
+          aria-label="О контакте"
+        >
+          <ion-icon slot="icon-only" name="information-circle-outline"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </section>
+  </app-page-inset>
+</ion-content>
