@@ -1,0 +1,100 @@
+:host {
+  --ink: #15181f;
+  --muted: #6d7482;
+  --surface: rgba(255, 255, 255, 0.92);
+  --surface-strong: #ffffff;
+  --surface-soft: #f3f4f6;
+  --line: rgba(21, 24, 31, 0.08);
+  --accent: #111111;
+  --shadow: 0 12px 28px rgba(15, 18, 24, 0.08);
+}
+
+ion-content.settings-shell {
+  --background: #f3f4f6;
+}
+
+.settings-layout {
+  padding: 20px 16px 32px;
+  color: var(--ink);
+}
+
+.topbar-card,
+.settings-card,
+.settings-item {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.topbar-card,
+.settings-card {
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.settings-card {
+  margin-top: 16px;
+}
+
+.settings-back-button {
+  display: inline-flex;
+  margin: 0 0 8px -6px;
+  --color: var(--ink);
+}
+
+h1,
+h3 {
+  margin: 0;
+}
+
+.subtle,
+.settings-item p {
+  color: var(--muted);
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.settings-section + .settings-section {
+  margin-top: 18px;
+}
+
+.settings-list {
+  display: grid;
+  gap: 12px;
+}
+
+.settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.chip-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 12px;
+}
+
+.chip-button {
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: var(--surface-soft);
+}
+
+@media (max-width: 720px) {
+  .settings-item {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}

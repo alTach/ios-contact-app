@@ -1,0 +1,37 @@
+<ion-content [fullscreen]="true" class="shell">
+  <section class="topbar-card">
+    <div>
+      <h1>Клавиши</h1>
+      <p class="subtle">Быстрый набор номера</p>
+    </div>
+    <div class="topbar-actions">
+      <a class="topbar-icon" routerLink="/settings" aria-label="Настройки">
+        <ion-icon name="settings-outline"></ion-icon>
+      </a>
+    </div>
+  </section>
+
+  <section class="dialer-card">
+    <p class="eyebrow">Набор номера</p>
+    <div class="dial-display">{{ store.dialNumber || '+7 (___) ___-__-__' }}</div>
+    <div class="dial-grid">
+      <button class="dial-key" (click)="store.addDigit('1')"><strong>1</strong></button>
+      <button class="dial-key" (click)="store.addDigit('2')"><strong>2</strong><span>ABC</span></button>
+      <button class="dial-key" (click)="store.addDigit('3')"><strong>3</strong><span>DEF</span></button>
+      <button class="dial-key" (click)="store.addDigit('4')"><strong>4</strong><span>GHI</span></button>
+      <button class="dial-key" (click)="store.addDigit('5')"><strong>5</strong><span>JKL</span></button>
+      <button class="dial-key" (click)="store.addDigit('6')"><strong>6</strong><span>MNO</span></button>
+      <button class="dial-key" (click)="store.addDigit('7')"><strong>7</strong><span>PQRS</span></button>
+      <button class="dial-key" (click)="store.addDigit('8')"><strong>8</strong><span>TUV</span></button>
+      <button class="dial-key" (click)="store.addDigit('9')"><strong>9</strong><span>WXYZ</span></button>
+      <button class="dial-key" (click)="store.addDigit('*')"><strong>*</strong></button>
+      <button class="dial-key zero" (click)="store.addDigit('0')"><strong>0</strong><span>+</span></button>
+      <button class="dial-key" (click)="store.addDigit('#')"><strong>#</strong></button>
+    </div>
+    <div class="dial-actions">
+      <ion-button fill="outline" shape="round" (click)="store.removeDigit()">Удалить</ion-button>
+      <ion-button color="success" shape="round">Позвонить</ion-button>
+      <ion-button fill="clear" shape="round" (click)="store.clearDial()">Очистить</ion-button>
+    </div>
+  </section>
+</ion-content>

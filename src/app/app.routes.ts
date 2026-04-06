@@ -1,0 +1,48 @@
+import { Routes } from '@angular/router';
+
+export const appRoutes: Routes = [
+  {
+    path: '',
+    pathMatch: 'full',
+    redirectTo: 'tabs/contacts'
+  },
+  {
+    path: 'tabs',
+    loadComponent: () => import('./pages/tabs-shell/tabs-shell.page').then((module) => module.TabsShellPage),
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'contacts'
+      },
+      {
+        path: 'favorites',
+        loadComponent: () => import('./pages/favorites/favorites.page').then((module) => module.FavoritesPage)
+      },
+      {
+        path: 'recent',
+        loadComponent: () => import('./pages/recent/recent.page').then((module) => module.RecentPage)
+      },
+      {
+        path: 'contacts',
+        loadComponent: () => import('./pages/contacts/contacts.page').then((module) => module.ContactsPage)
+      },
+      {
+        path: 'directory',
+        loadComponent: () => import('./pages/directory/directory.page').then((module) => module.DirectoryPage)
+      },
+      {
+        path: 'keypad',
+        loadComponent: () => import('./pages/keypad/keypad.page').then((module) => module.KeypadPage)
+      }
+    ]
+  },
+  {
+    path: 'settings',
+    loadComponent: () => import('./pages/settings/settings.page').then((module) => module.SettingsPage)
+  },
+  {
+    path: '**',
+    redirectTo: 'tabs/contacts'
+  }
+];

@@ -1,0 +1,523 @@
+:host {
+  --ink: #15181f;
+  --muted: #6d7482;
+  --surface: rgba(255, 255, 255, 0.92);
+  --surface-strong: #ffffff;
+  --surface-soft: #f3f4f6;
+  --line: rgba(21, 24, 31, 0.08);
+  --accent: #111111;
+  --success: #1f8a5b;
+  --shadow: 0 12px 28px rgba(15, 18, 24, 0.08);
+}
+
+ion-content.shell {
+  --background: #f3f4f6;
+}
+
+.shell {
+  position: relative;
+  padding: 20px 16px 120px;
+  color: var(--ink);
+}
+
+.background-glow {
+  position: absolute;
+  border-radius: 999px;
+  pointer-events: none;
+  filter: blur(18px);
+  opacity: 0.18;
+}
+
+.background-glow-a {
+  top: -40px;
+  left: -40px;
+  width: 190px;
+  height: 190px;
+  background: radial-gradient(circle, rgba(90, 97, 110, 0.2) 0%, rgba(90, 97, 110, 0) 72%);
+}
+
+.background-glow-b {
+  top: 120px;
+  right: -60px;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(90, 97, 110, 0.16) 0%, rgba(90, 97, 110, 0) 74%);
+}
+
+.topbar-card,
+.toolbar-card,
+.list-card,
+.directory-card,
+.contact-card,
+.dialer-card,
+.overlay-card,
+.info-card,
+.socials-card,
+.directory-entry,
+.user-card,
+.portal-card {
+  background: var(--surface);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+}
+
+.topbar-card,
+.toolbar-card,
+.list-card,
+.directory-card,
+.dialer-card {
+  border-radius: 14px;
+  padding: 18px;
+}
+
+.topbar-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: flex-start;
+  padding: 20px;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+}
+
+.subtle,
+.directory-address,
+.directory-main p,
+.portal-card__message,
+.sheet-modal p,
+.info-card p,
+.socials-card a {
+  color: var(--muted);
+}
+
+.eyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+
+.topbar-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.topbar-icon {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-strong);
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.topbar-icon ion-icon {
+  font-size: 20px;
+  color: var(--ink);
+}
+
+.toolbar-row,
+.toolbar-actions-left,
+.chip-row,
+.meta-row,
+.detail-row,
+.dial-actions,
+.portal-card__actions,
+.sheet-modal__actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.view-switch {
+  display: inline-flex;
+  background: var(--surface-soft);
+  border-radius: 12px;
+  padding: 4px;
+  border: 1px solid var(--line);
+}
+
+.mode-button,
+.chip-button,
+.alphabet-button,
+.dial-key,
+.portal-button,
+.add-contact-button,
+.simple-row {
+  border: 0;
+  color: var(--ink);
+}
+
+.mode-button,
+.chip-button {
+  border-radius: 10px;
+  padding: 10px 14px;
+  background: var(--surface-soft);
+}
+
+.mode-button.active,
+.chip-button.active,
+.alphabet-button.active {
+  background: #15181f;
+  color: #fff;
+}
+
+.add-contact-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-strong);
+  font-weight: 600;
+}
+
+.search-wrap {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 180ms ease;
+}
+
+.search-wrap.open {
+  max-height: 100px;
+  margin-top: 12px;
+}
+
+.select-row {
+  margin-top: 14px;
+}
+
+.select-row ion-select {
+  width: 100%;
+  border-radius: 12px;
+  background: var(--surface-soft);
+  --padding-start: 14px;
+  --padding-end: 14px;
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  border: 1px solid var(--line);
+}
+
+.chip-row {
+  overflow-x: auto;
+  padding-bottom: 4px;
+  margin-top: 12px;
+}
+
+.selection-badge {
+  display: inline-flex;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  padding: 8px 12px;
+  background: #15181f;
+  color: #fff;
+  font-size: 13px;
+}
+
+.inline-feedback {
+  margin-bottom: 12px;
+  padding: 14px 16px;
+  border: 1px dashed var(--line);
+  border-radius: 12px;
+  color: var(--muted);
+  background: var(--surface-soft);
+}
+
+.user-card,
+.portal-card {
+  margin-bottom: 14px;
+  padding: 18px;
+  border-radius: 12px;
+  background: var(--surface-strong);
+}
+
+.user-card__main,
+.portal-card__header {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.user-card__info {
+  flex: 1;
+}
+
+.list-card,
+.directory-card,
+.dialer-card {
+  margin-top: 16px;
+}
+
+.list-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 34px;
+  gap: 14px;
+}
+
+.contact-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.letter-heading {
+  display: flex;
+  margin: 10px 0 4px;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.letter-heading.simple {
+  margin: 2px 0 6px;
+  font-size: 13px;
+}
+
+.simple-mode-section + .simple-mode-section {
+  margin-top: 6px;
+}
+
+.simple-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  text-align: left;
+  padding: 14px 0;
+  background: transparent;
+  border-bottom: 1px solid var(--line);
+  font-size: 16px;
+}
+
+.contact-card {
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  background: var(--surface);
+}
+
+.contact-main {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.avatar,
+.profile-avatar {
+  display: grid;
+  place-items: center;
+  color: #fff;
+  background: #15181f;
+  font-weight: 700;
+}
+
+.avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+}
+
+.profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 14px;
+  font-size: 24px;
+}
+
+.contact-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.title-row,
+.overlay-header,
+.profile-hero,
+.directory-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.title-row {
+  align-items: flex-start;
+}
+
+.status {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.status.online {
+  color: var(--success);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.meta-pill {
+  border-radius: 8px;
+  padding: 6px 10px;
+  background: #eceef2;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.meta-pill.subtle {
+  background: #f1f3f6;
+}
+
+.meta-pill.tag {
+  background: #f3f4f6;
+}
+
+.alphabet-rail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  align-items: center;
+  position: sticky;
+  top: 20px;
+  align-self: start;
+  padding: 8px 4px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid var(--line);
+}
+
+.alphabet-button {
+  width: 28px;
+  height: 24px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.88);
+  border: 1px solid var(--line);
+}
+
+.overlay-panel,
+.sheet-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 25;
+}
+
+.overlay-backdrop,
+.sheet-modal__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 18, 24, 0.28);
+}
+
+.overlay-card {
+  position: absolute;
+  right: 16px;
+  top: 16px;
+  bottom: 96px;
+  width: min(540px, calc(100% - 32px));
+  border-radius: 14px;
+  padding: 20px;
+  overflow: auto;
+}
+
+.info-grid,
+.sheet-modal__list {
+  display: grid;
+  gap: 12px;
+}
+
+.info-card,
+.socials-card {
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.sheet-modal__panel {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 12px;
+  padding: 16px;
+  border-radius: 16px 16px 12px 12px;
+  background: var(--surface-strong);
+  border: 1px solid var(--line);
+  box-shadow: 0 -12px 30px rgba(15, 18, 24, 0.12);
+}
+
+.sheet-modal__handle {
+  width: 44px;
+  height: 4px;
+  margin: 0 auto 12px;
+  border-radius: 999px;
+  background: #c7cbd3;
+}
+
+.sheet-modal__row {
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: var(--surface-soft);
+  border: 1px solid var(--line);
+}
+
+.portal-button {
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 10px;
+  background: #15181f;
+  color: #fff;
+  font-weight: 600;
+}
+
+.portal-button.secondary {
+  background: var(--surface-soft);
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+@media (max-width: 900px) {
+  .list-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .alphabet-rail {
+    position: static;
+    flex-direction: row;
+    overflow-x: auto;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 720px) {
+  .topbar-card,
+  .toolbar-row,
+  .profile-hero,
+  .user-card__main {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .overlay-card {
+    inset: auto 12px 92px 12px;
+    width: auto;
+  }
+}
