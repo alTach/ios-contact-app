@@ -1,0 +1,49 @@
+:host {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  padding: 12px 0;
+}
+
+.contact-list-row__body {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+  position: relative;
+  padding-right: 4px;
+}
+
+.contact-list-row__body::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -12px;
+  height: 1px;
+  background: var(--line, rgba(21, 24, 31, 0.08));
+}
+
+.contact-list-row__title {
+  overflow: hidden;
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contact-list-row__title--danger {
+  color: #c62828;
+}
+
+.contact-list-row__subtitle {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 13px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

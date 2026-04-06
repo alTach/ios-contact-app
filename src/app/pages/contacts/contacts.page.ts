@@ -1,12 +1,12 @@
 import { NgIf } from '@angular/common';
-import { ChangeDetectionStrategy, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { IonPopover, IonicModule } from '@ionic/angular';
 
 import { ContactsTabViewComponent } from '../../components/contacts-tab-view/contacts-tab-view.component';
 import { PageInsetComponent } from '../../components/page-inset/page-inset.component';
-import { ContactsWorkspaceStore } from '../../state/contacts-workspace.store';
+import { ContactsWorkspaceStore, ViewMode } from '../../state/contacts-workspace.store';
 
 @Component({
   selector: 'app-contacts-page',
@@ -19,7 +19,15 @@ import { ContactsWorkspaceStore } from '../../state/contacts-workspace.store';
 export class ContactsPage {
   @ViewChild(IonPopover) private popover?: IonPopover;
 
-  constructor(public readonly store: ContactsWorkspaceStore) {}
+  constructor(
+    public readonly store: ContactsWorkspaceStore,
+    private readonly cdr: ChangeDetectorRef
+  ) {}
+
+  setViewMode(mode: ViewMode): void {
+    this.store.setViewMode(mode);
+    this.cdr.markForCheck();
+  }
 
   closeMenu(): void {
     void this.popover?.dismiss();

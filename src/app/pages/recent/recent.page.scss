@@ -1,5 +1,3 @@
-@import '../../shared/workspace-styles';
-
 .recent-list-card {
   padding: 0;
 }
@@ -10,10 +8,6 @@
   --inner-padding-end: 0;
 }
 
-.recent-item:last-child {
-  --inner-border-width: 0;
-}
-
 .recent-meta {
   display: inline-flex;
   align-items: center;
@@ -22,8 +16,4 @@
 
 .recent-meta ion-icon {
   font-size: 16px;
-}
-
-.missed-name {
-  color: #c62828;
 }

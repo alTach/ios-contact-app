@@ -1,0 +1,12 @@
+:host {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(21, 24, 31, 0.08);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+}

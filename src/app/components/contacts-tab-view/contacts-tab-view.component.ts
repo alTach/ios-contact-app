@@ -4,18 +4,20 @@ import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
-import { ContactsTabKey, ContactsWorkspaceStore } from '../../state/contacts-workspace.store';
+import { ContactListRowComponent } from '../contact-list-row/contact-list-row.component';
+import { ContactsTabKey, ContactsWorkspaceStore, ViewMode } from '../../state/contacts-workspace.store';
 
 @Component({
   selector: 'app-contacts-tab-view',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, IonicModule, RouterLink],
+  imports: [NgFor, NgIf, FormsModule, IonicModule, RouterLink, ContactListRowComponent],
   templateUrl: './contacts-tab-view.component.html',
   styleUrls: ['./contacts-tab-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContactsTabViewComponent implements AfterViewInit {
   @Input({ required: true }) tab!: ContactsTabKey;
+  @Input() viewMode: ViewMode = 'simple';
   @ViewChild('searchInput') searchInput?: ElementRef<{ setFocus: () => Promise<void> }>;
 
   constructor(public readonly store: ContactsWorkspaceStore) {}
@@ -39,6 +41,11 @@ export class ContactsTabViewComponent implements AfterViewInit {
 
   get subtitle(): string {
     return `${this.store.visibleContacts(this.tab).length} из ${this.store.contacts.length} контактов`;
+  }
+
+  get bottomCountLabel(): string {
+    const count = this.store.listContacts(this.tab).length;
+    return `${count} контактов`;
   }
 
   get isContactsTab(): boolean {

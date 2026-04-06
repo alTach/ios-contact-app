@@ -236,10 +236,10 @@ h3 {
 .user-card,
 .portal-card {
   margin-bottom: 14px;
-  padding: 16px 0;
-  border-radius: 0;
-  background: transparent;
-  border-bottom: 1px solid var(--line);
+  padding: 14px 16px;
+  border-radius: 16px;
+  background: #f3f4f6;
+  border: 0;
 }
 
 .user-card__main,
@@ -251,6 +251,52 @@ h3 {
 
 .user-card__info {
   flex: 1;
+}
+
+.portal-card__header {
+  justify-content: space-between;
+}
+
+.portal-card__header h3 {
+  flex: 1;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.portal-card__close {
+  display: grid;
+  flex: 0 0 auto;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+}
+
+.portal-card__message {
+  margin: 6px 0 0;
+  color: var(--muted);
+}
+
+.portal-card__divider {
+  height: 1px;
+  margin: 12px 0 10px;
+  background: rgba(21, 24, 31, 0.08);
+}
+
+.portal-card__actions {
+  gap: 0;
+}
+
+.portal-button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #1f6feb;
+  font-weight: 600;
 }
 
 .list-card,
@@ -303,16 +349,26 @@ h3 {
   font-size: 16px;
 }
 
-.contact-sections ion-item:last-child {
-  --inner-border-width: 0;
-}
-
 .contact-sections ion-item,
 .recent-list-card ion-item {
   --padding-start: 0;
   --padding-end: 0;
   --inner-padding-start: 0;
   --inner-padding-end: 0;
+  --inner-border-width: 0;
+}
+
+.contact-sections ion-item.simple-list-item {
+  --inner-border-width: 0 0 1px 0;
+  --inner-padding-top: 8px;
+  --inner-padding-bottom: 8px;
+  min-height: 0;
+}
+
+.contact-sections ion-item.simple-list-item ion-label {
+  margin-top: 0;
+  margin-bottom: 0;
+  font-size: 15px;
 }
 
 .contact-card {
@@ -356,12 +412,7 @@ h3 {
   top: 0;
   z-index: 3;
   background: #ffffff;
-  padding: 4px 0 10px;
-}
-
-.simple-section-header {
-  padding-top: 2px;
-  padding-bottom: 12px;
+  padding: 8px 0 0;
 }
 
 .extended-section-letter {
@@ -369,7 +420,7 @@ h3 {
   font-size: 13px;
   font-weight: 700;
   color: var(--muted);
-  margin-bottom: 8px;
+  //margin-bottom: 4px;
 }
 
 .extended-section-divider {
@@ -545,21 +596,6 @@ h3 {
   padding: 12px 14px;
   border-radius: 0;
   background: transparent;
-  border: 1px solid var(--line);
-}
-
-.portal-button {
-  min-height: 40px;
-  padding: 0 14px;
-  border-radius: 10px;
-  background: #15181f;
-  color: #fff;
-  font-weight: 600;
-}
-
-.portal-button.secondary {
-  background: transparent;
-  color: var(--ink);
   border: 1px solid var(--line);
 }
 

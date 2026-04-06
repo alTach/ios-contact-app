@@ -32,11 +32,11 @@
   <app-page-inset>
     <div class="background-glow background-glow-a"></div>
     <div class="background-glow background-glow-b"></div>
-    <app-contacts-tab-view tab="contacts"></app-contacts-tab-view>
+    <app-contacts-tab-view tab="contacts" [viewMode]="store.viewMode"></app-contacts-tab-view>
   </app-page-inset>
 </ion-content>
 
-<ion-popover trigger="contacts-menu-trigger" triggerAction="click" alignment="end" side="bottom">
+<ion-popover trigger="contacts-menu-trigger" triggerAction="click" alignment="end" side="bottom" [showBackdrop]="false">
   <ng-template>
     <div class="contacts-menu">
       <p class="contacts-menu__label">Режим отображения</p>
@@ -46,7 +46,7 @@
           type="button"
           class="mode-preview"
           [class.active]="store.viewMode === 'simple'"
-          (click)="store.setViewMode('simple')"
+          (click)="setViewMode('simple')"
           aria-label="Простой режим"
         >
           <div class="mode-preview__frame mode-preview__frame--simple">
@@ -65,7 +65,7 @@
           type="button"
           class="mode-preview"
           [class.active]="store.viewMode === 'extended'"
-          (click)="store.setViewMode('extended')"
+          (click)="setViewMode('extended')"
           aria-label="Универсальный режим"
         >
           <div class="mode-preview__frame mode-preview__frame--extended">

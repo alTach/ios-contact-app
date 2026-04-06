@@ -52,36 +52,32 @@
 
   <article class="portal-card" *ngIf="store.activePortalCard() as card">
     <div class="portal-card__header">
-      <div>
-        <p class="eyebrow">Системное сообщение</p>
-        <h3>{{ card.title }}</h3>
-      </div>
+      <h3>{{ card.title }}</h3>
+      <button class="portal-card__close" type="button" (click)="store.dismissPortalCard()" aria-label="Закрыть">
+        <ion-icon name="close-outline"></ion-icon>
+      </button>
     </div>
     <p class="portal-card__message">{{ card.message }}</p>
-    <div class="portal-card__details">
-      <span class="meta-pill subtle" *ngFor="let detail of card.details">{{ detail }}</span>
-    </div>
+    <div class="portal-card__divider"></div>
     <div class="portal-card__actions">
       <button
-        *ngFor="let action of card.actions"
         class="portal-button"
-        [class.secondary]="action.kind === 'secondary'"
         type="button"
-        (click)="store.handlePortalAction(action.action)"
+        (click)="store.handlePortalAction(card.actions[0].action)"
       >
-        {{ action.label }}
+        {{ card.actions[0].label }}
       </button>
     </div>
   </article>
 
   <div class="list-layout">
     <div class="contact-sections">
-      <ng-container *ngIf="store.viewMode === 'simple'; else extendedSections">
+      <ng-container *ngIf="viewMode === 'simple'; else extendedSections">
         <ion-item-group
           *ngFor="let section of store.groupedListContacts(tab); trackBy: store.trackByLetter"
           [attr.id]="'letter-' + section.letter"
         >
-          <div class="extended-section-header simple-section-header">
+          <div class="extended-section-header">
             <ion-label class="extended-section-letter">{{ section.letter }}</ion-label>
             <ion-item-divider class="extended-section-divider"></ion-item-divider>
           </div>
@@ -90,6 +86,7 @@
             button
             detail="false"
             *ngFor="let contact of section.contacts; trackBy: store.trackByContact"
+            class="simple-list-item"
             [routerLink]="['/contact', contact.id]"
           >
             <ion-checkbox
@@ -127,15 +124,12 @@
               (click)="$event.stopPropagation()"
               (ionChange)="store.toggleSelection(contact.id)"
             ></ion-checkbox>
-            <div class="avatar" slot="start">{{ contact.lastName[0] }}{{ contact.firstName[0] }}</div>
-            <ion-label>
-              <h2>{{ contact.fullName }}</h2>
-              <p>{{ contact.occupation }} · {{ contact.organization }}</p>
-            </ion-label>
+            <app-contact-list-row [contact]="contact" [subtitle]="contact.occupation + ' · ' + contact.organization"></app-contact-list-row>
           </ion-item>
         </ion-item-group>
       </ng-template>
     </div>
+
 
     <aside class="alphabet-rail">
       <button
@@ -147,4 +141,6 @@
       </button>
     </aside>
   </div>
+
+  <p class="contacts-bottom-count">{{ bottomCountLabel }}</p>
 </section>

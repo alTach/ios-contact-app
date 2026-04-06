@@ -1,7 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { NgFor } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { ContactsWorkspaceStore } from '../../state/contacts-workspace.store';
@@ -9,7 +8,7 @@ import { ContactsWorkspaceStore } from '../../state/contacts-workspace.store';
 @Component({
   selector: 'app-directory-view',
   standalone: true,
-  imports: [NgFor, FormsModule, IonicModule, RouterLink],
+  imports: [NgFor, FormsModule, IonicModule],
   templateUrl: './directory-view.component.html',
   styleUrls: ['./directory-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

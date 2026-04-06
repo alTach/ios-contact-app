@@ -1,0 +1,10 @@
+<app-avatar [initials]="initials"></app-avatar>
+<span class="contact-list-row__body">
+  <span class="contact-list-row__title" [class.contact-list-row__title--danger]="titleTone === 'danger'">
+    {{ contact.fullName }}
+  </span>
+  <span class="contact-list-row__subtitle" *ngIf="subtitle">{{ subtitle }}</span>
+  <span class="contact-list-row__subtitle">
+    <ng-content select="[contact-row-subtitle]"></ng-content>
+  </span>
+</span>

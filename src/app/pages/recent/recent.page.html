@@ -21,14 +21,15 @@
         *ngFor="let contact of store.listContacts('recent'); trackBy: store.trackByContact"
         class="recent-item"
       >
-        <div class="avatar" slot="start">{{ contact.lastName[0] }}{{ contact.firstName[0] }}</div>
-        <ion-label>
-          <h2 [class.missed-name]="store.isMissedCall(contact)">{{ contact.fullName }}</h2>
-          <p class="recent-meta">
+        <app-contact-list-row
+          [contact]="contact"
+          [titleTone]="store.isMissedCall(contact) ? 'danger' : 'default'"
+        >
+          <span contact-row-subtitle class="recent-meta">
             <ion-icon [name]="store.recentCallIcon(contact)"></ion-icon>
             <span>{{ store.recentSource(contact) }}</span>
-          </p>
-        </ion-label>
+          </span>
+        </app-contact-list-row>
         <ion-button
           slot="end"
           fill="clear"

@@ -40,6 +40,8 @@ export class ContactsWorkspaceStore {
   dialNumber = '';
   activeCallSource = 'SIM 1';
   addContactPressed = false;
+  keypadMatchesModalOpen = false;
+  keypadMatchesSearch = '';
   sheetOpen = false;
   selectedIds = new Set<number>();
   selectedContact: ContactCard | null = null;
@@ -56,8 +58,7 @@ export class ContactsWorkspaceStore {
       message: '3 контакта похожи по номеру и имени. Можно объединить их в одну карточку.',
       details: ['Цой Виктор / Цой Виктор Сергеевич', 'Громов Илья / Илья Громов', 'МФЦ Тверской / Мои документы Тверской'],
       actions: [
-        { label: 'Поработать', kind: 'primary', action: 'work' },
-        { label: 'Отклонить', kind: 'secondary', action: 'dismiss' }
+        { label: 'Посмотреть дубликаты', kind: 'primary', action: 'work' }
       ]
     }
   ];
@@ -275,12 +276,37 @@ export class ContactsWorkspaceStore {
     return Math.max(0, this.keypadMatches().length - 1);
   }
 
+  openKeypadMatchesModal(): void {
+    this.keypadMatchesSearch = this.normalizedDialNumber();
+    this.keypadMatchesModalOpen = true;
+  }
+
+  closeKeypadMatchesModal(): void {
+    this.keypadMatchesModalOpen = false;
+  }
+
+  keypadMatchesSearchResults(): ContactCard[] {
+    const query = this.keypadMatchesSearch.replace(/\D/g, '');
+    if (!query) {
+      return [];
+    }
+
+    return this.listContacts('contacts')
+      .filter((contact) => this.contactPhoneDigits(contact).includes(query))
+      .slice(0, 12);
+  }
+
   fillDialFromContact(contact: ContactCard): void {
     this.dialNumber = this.formatPhoneNumber(this.contactPhoneDigits(contact));
+    this.closeKeypadMatchesModal();
   }
 
   contactPhone(contact: ContactCard): string {
     return this.formatPhoneNumber(this.contactPhoneDigits(contact));
+  }
+
+  contactInitials(contact: ContactCard): string {
+    return `${contact.lastName.slice(0, 1)}${contact.firstName.slice(0, 1)}`.toUpperCase();
   }
 
   addContact(): void {
