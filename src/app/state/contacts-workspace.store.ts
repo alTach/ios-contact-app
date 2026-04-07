@@ -8,6 +8,13 @@ export type ContactsTabKey = 'favorites' | 'recent' | 'contacts';
 export type FilterKey = 'all' | 'incoming' | 'outgoing' | 'missed' | 'unknown' | 'long';
 export type ViewMode = 'simple' | 'extended';
 export type PortalActionType = 'review-duplicates' | 'sync-needed' | 'birthday';
+export type ContactSourceKey = 'Google' | 'Телефон' | 'iCloud';
+
+export interface ContactSourceList {
+  id: string;
+  title: string;
+  source: ContactSourceKey;
+}
 
 export interface PortalAction {
   label: string;
@@ -31,6 +38,8 @@ export class ContactsWorkspaceStore {
 
   activeGroup = 'Все';
   activeFilter: FilterKey = 'all';
+  activeDataSource: ContactSourceKey = 'Google';
+  activeContactListId = 'gmail-1';
   activeLetter = '';
   searchOpen = false;
   searchTerm = '';
@@ -73,6 +82,13 @@ export class ContactsWorkspaceStore {
   ];
 
   readonly callSources = ['SIM 1', 'SIM 2', 'WhatsApp'];
+  readonly dataSources: ContactSourceKey[] = ['Google', 'Телефон', 'iCloud'];
+  contactLists: ContactSourceList[] = [
+    { id: 'gmail-1', title: 'gmail1', source: 'Google' },
+    { id: 'gmail-2', title: 'gmail2', source: 'Google' },
+    { id: 'phone-1', title: 'Телефон', source: 'Телефон' },
+    { id: 'icloud-1', title: 'iCloud', source: 'iCloud' }
+  ];
 
   constructor() {
     this.repository.getContacts()
@@ -97,6 +113,34 @@ export class ContactsWorkspaceStore {
 
   setFilter(filter: FilterKey): void {
     this.activeFilter = filter;
+  }
+
+  setDataSource(source: ContactSourceKey): void {
+    this.activeDataSource = source;
+  }
+
+  setActiveContactList(listId: string): void {
+    const list = this.contactLists.find((candidate) => candidate.id === listId);
+    if (!list) {
+      return;
+    }
+
+    this.activeContactListId = list.id;
+    this.activeDataSource = list.source;
+  }
+
+  addContactList(): void {
+    const nextIndex = this.contactLists.filter((list) => list.source === this.activeDataSource).length + 1;
+    const title = this.newContactListTitle(this.activeDataSource, nextIndex);
+    const id = this.newContactListId(this.activeDataSource, nextIndex);
+    const nextList: ContactSourceList = {
+      id,
+      title,
+      source: this.activeDataSource
+    };
+
+    this.contactLists = [...this.contactLists, nextList];
+    this.setActiveContactList(nextList.id);
   }
 
   toggleSearch(): void {
@@ -145,6 +189,7 @@ export class ContactsWorkspaceStore {
   visibleContacts(tab: ContactsTabKey): ContactCard[] {
     return this.baseContacts(tab).filter((contact) => {
       const matchesGroup = this.activeGroup === 'Все' || contact.group === this.activeGroup;
+      const matchesContactList = tab !== 'contacts' || this.contactListIdForContact(contact) === this.activeContactListId;
       const searchHaystack = [
         contact.fullName,
         contact.organization,
@@ -155,7 +200,7 @@ export class ContactsWorkspaceStore {
       ].join(' ').toLowerCase();
       const matchesSearch = searchHaystack.includes(this.searchTerm.trim().toLowerCase());
       const matchesFilter = this.matchFilter(contact, tab);
-      return matchesGroup && matchesSearch && matchesFilter;
+      return matchesGroup && matchesContactList && matchesSearch && matchesFilter;
     });
   }
 
@@ -242,6 +287,29 @@ export class ContactsWorkspaceStore {
 
   activePortalCard(): PortalCard | null {
     return this.portalCards[0] ?? null;
+  }
+
+  currentContactListTitle(): string {
+    return this.contactLists.find((list) => list.id === this.activeContactListId)?.title ?? 'Контакты';
+  }
+
+  groupedContactSources(): Array<{ source: ContactSourceKey; lists: ContactSourceList[] }> {
+    return this.dataSources.map((source) => ({
+      source,
+      lists: this.contactLists.filter((list) => list.source === source)
+    }));
+  }
+
+  contactListCount(listId: string): number {
+    return this.contacts.filter((contact) => this.contactListIdForContact(contact) === listId).length;
+  }
+
+  trackByContactSource(_: number, group: { source: ContactSourceKey }): string {
+    return group.source;
+  }
+
+  trackByContactSourceList(_: number, list: ContactSourceList): string {
+    return list.id;
   }
 
   jumpToLetter(letter: string): void {
@@ -412,5 +480,44 @@ export class ContactsWorkspaceStore {
     const p4 = trimmed.slice(9, 11);
 
     return `+${country} ${p1}${p2 ? ` ${p2}` : ''}${p3 ? `-${p3}` : ''}${p4 ? `-${p4}` : ''}`.trim();
+  }
+
+  private contactListIdForContact(contact: ContactCard): string {
+    const googleLists = this.contactLists.filter((list) => list.source === 'Google');
+    const phoneLists = this.contactLists.filter((list) => list.source === 'Телефон');
+    const icloudLists = this.contactLists.filter((list) => list.source === 'iCloud');
+
+    switch (contact.id % 4) {
+      case 0:
+        return googleLists[0]?.id ?? 'gmail-1';
+      case 1:
+        return googleLists[1]?.id ?? googleLists[0]?.id ?? 'gmail-1';
+      case 2:
+        return phoneLists[0]?.id ?? 'phone-1';
+      default:
+        return icloudLists[0]?.id ?? 'icloud-1';
+    }
+  }
+
+  private newContactListTitle(source: ContactSourceKey, index: number): string {
+    switch (source) {
+      case 'Google':
+        return `gmail${index}`;
+      case 'Телефон':
+        return `Телефон ${index}`;
+      case 'iCloud':
+        return `iCloud ${index}`;
+    }
+  }
+
+  private newContactListId(source: ContactSourceKey, index: number): string {
+    switch (source) {
+      case 'Google':
+        return `gmail-${index}`;
+      case 'Телефон':
+        return `phone-${index}`;
+      case 'iCloud':
+        return `icloud-${index}`;
+    }
   }
 }

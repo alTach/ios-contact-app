@@ -1,0 +1,81 @@
+ion-toolbar {
+  --background: #f3f4f6;
+  --border-color: var(--contact-divider-color, rgba(21, 24, 31, 0.08));
+}
+
+ion-content.shell {
+  --background: #f3f4f6;
+}
+
+.sources-accordion {
+  display: grid;
+  gap: 10px;
+}
+
+.sources-accordion ion-accordion {
+  border: 0;
+  --background: transparent;
+  background: transparent;
+}
+
+.sources-accordion ion-accordion::part(content) {
+  background: transparent;
+  overflow: hidden;
+}
+
+.sources-accordion__header {
+  --background: #f3f4f6;
+  --color: var(--ink);
+  --background-activated: transparent;
+  --background-focused: transparent;
+  --background-hover: transparent;
+  --ripple-color: transparent;
+  --padding-start: 0;
+  --inner-padding-end: 0;
+  --border-width: 0;
+  --inner-border-width: 0;
+  --min-height: 44px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.sources-panel {
+  margin: 0;
+  padding: 0 16px;
+  border-radius: 12px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+.sources-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 52px;
+  border-bottom: var(--contact-divider-width, 1px) solid var(--contact-divider-color, rgba(21, 24, 31, 0.08));
+  color: var(--ink);
+  text-decoration: none;
+}
+
+.sources-row:last-child {
+  border-bottom: 0;
+}
+
+.sources-row__title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sources-row__count {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.sources-row ion-icon {
+  color: var(--muted);
+  font-size: 17px;
+}

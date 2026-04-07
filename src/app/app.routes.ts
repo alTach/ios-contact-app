@@ -4,7 +4,7 @@ export const appRoutes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'tabs/contacts'
+    redirectTo: 'tabs/contact/list'
   },
   {
     path: 'tabs',
@@ -13,7 +13,15 @@ export const appRoutes: Routes = [
       {
         path: '',
         pathMatch: 'full',
-        redirectTo: 'contacts'
+        redirectTo: 'contact/list'
+      },
+      {
+        path: 'contact',
+        loadComponent: () => import('./pages/contact-sources/contact-sources.page').then((module) => module.ContactSourcesPage)
+      },
+      {
+        path: 'contact/list',
+        loadComponent: () => import('./pages/contacts/contacts.page').then((module) => module.ContactsPage)
       },
       {
         path: 'favorites',
@@ -22,10 +30,6 @@ export const appRoutes: Routes = [
       {
         path: 'recent',
         loadComponent: () => import('./pages/recent/recent.page').then((module) => module.RecentPage)
-      },
-      {
-        path: 'contacts',
-        loadComponent: () => import('./pages/contacts/contacts.page').then((module) => module.ContactsPage)
       },
       {
         path: 'directory',
@@ -47,6 +51,6 @@ export const appRoutes: Routes = [
   },
   {
     path: '**',
-    redirectTo: 'tabs/contacts'
+    redirectTo: 'tabs/contact/list'
   }
 ];

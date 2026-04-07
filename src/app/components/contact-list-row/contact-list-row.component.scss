@@ -23,8 +23,8 @@
   left: 0;
   right: 0;
   bottom: -12px;
-  height: 1px;
-  background: var(--line, rgba(21, 24, 31, 0.08));
+  height: var(--contact-divider-width, 1px);
+  background: var(--contact-divider-color, rgba(21, 24, 31, 0.08));
 }
 
 .contact-list-row__title {

@@ -2,7 +2,7 @@ import { NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { IonPopover, IonicModule } from '@ionic/angular';
+import { IonPopover, IonicModule, NavController } from '@ionic/angular';
 
 import { ContactsTabViewComponent } from '../../components/contacts-tab-view/contacts-tab-view.component';
 import { PageInsetComponent } from '../../components/page-inset/page-inset.component';
@@ -21,7 +21,8 @@ export class ContactsPage {
 
   constructor(
     public readonly store: ContactsWorkspaceStore,
-    private readonly cdr: ChangeDetectorRef
+    private readonly cdr: ChangeDetectorRef,
+    private readonly navController: NavController
   ) {}
 
   setViewMode(mode: ViewMode): void {
@@ -31,5 +32,9 @@ export class ContactsPage {
 
   closeMenu(): void {
     void this.popover?.dismiss();
+  }
+
+  goBackToSources(): void {
+    void this.navController.navigateBack('/tabs/contact');
   }
 }

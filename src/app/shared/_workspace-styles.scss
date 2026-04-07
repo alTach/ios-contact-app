@@ -1,10 +1,18 @@
+:root {
+  --contact-divider-color: rgba(21, 24, 31, 0.08);
+  --contact-divider-width: 1px;
+}
+
+$contact-divider-color: rgba(21, 24, 31, 0.08);
+$contact-divider-width: 1px;
+
 :host {
   --ink: #15181f;
   --muted: #6d7482;
   --surface: #ffffff;
   --surface-strong: #ffffff;
   --surface-soft: #ffffff;
-  --line: rgba(21, 24, 31, 0.08);
+  --line: #{$contact-divider-color};
   --accent: #111111;
   --success: #1f8a5b;
   --shadow: none;
@@ -356,10 +364,11 @@ h3 {
   --inner-padding-start: 0;
   --inner-padding-end: 0;
   --inner-border-width: 0;
+  --border-color: var(--contact-divider-color, #{$contact-divider-color});
 }
 
 .contact-sections ion-item.simple-list-item {
-  --inner-border-width: 0 0 1px 0;
+  --inner-border-width: 0 0 var(--contact-divider-width, #{$contact-divider-width}) 0;
   --inner-padding-top: 8px;
   --inner-padding-bottom: 8px;
   min-height: 0;
@@ -426,23 +435,25 @@ h3 {
 .extended-section-divider {
   display: block;
   width: 100%;
-  min-height: 1px;
+  min-height: var(--contact-divider-width, #{$contact-divider-width});
   --background: transparent;
   --color: transparent;
   --inner-padding-start: 0;
   --inner-padding-end: 0;
   --padding-start: 0;
   --padding-end: 0;
-  --min-height: 1px;
+  --min-height: var(--contact-divider-width, #{$contact-divider-width});
+  height: var(--contact-divider-width, #{$contact-divider-width});
   border: 0;
+  background: transparent;
 }
  
 .extended-section-divider::part(native) {
-  min-height: 1px;
+  min-height: var(--contact-divider-width, #{$contact-divider-width});
+  height: var(--contact-divider-width, #{$contact-divider-width});
   padding: 0;
-  background: transparent;
+  background: var(--contact-divider-color, #{$contact-divider-color});
   border: 0;
-  border-top: 1px solid var(--line);
 }
 
 .title-row,

@@ -1,6 +1,12 @@
 <ion-header [translucent]="true">
   <ion-toolbar>
-    <ion-title>Контакты</ion-title>
+    <ion-buttons slot="start">
+      <ion-button fill="clear" (click)="goBackToSources()" aria-label="Списки">
+        <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
+        <ion-label>Списки</ion-label>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ store.currentContactListTitle() }}</ion-title>
     <ion-buttons slot="end">
       <ion-button fill="clear" (click)="store.toggleSearch()" aria-label="Поиск">
         <ion-icon slot="icon-only" name="search-outline"></ion-icon>
@@ -25,7 +31,7 @@
 <ion-content [fullscreen]="true" class="shell">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Контакты</ion-title>
+      <ion-title size="large">{{ store.currentContactListTitle() }}</ion-title>
     </ion-toolbar>
   </ion-header>
 
