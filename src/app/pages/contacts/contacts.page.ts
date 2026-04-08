@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -11,7 +10,7 @@ import { ContactsWorkspaceStore, ViewMode } from '../../state/contacts-workspace
 @Component({
   selector: 'app-contacts-page',
   standalone: true,
-  imports: [NgIf, IonicModule, FormsModule, RouterLink, ContactsTabViewComponent, PageInsetComponent],
+  imports: [IonicModule, FormsModule, RouterLink, ContactsTabViewComponent, PageInsetComponent],
   templateUrl: './contacts.page.html',
   styleUrls: ['./contacts.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

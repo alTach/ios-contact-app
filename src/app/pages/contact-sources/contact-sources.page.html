@@ -18,28 +18,28 @@
 
   <app-page-inset>
     <ion-accordion-group class="sources-accordion" [multiple]="true" [value]="[store.activeDataSource]">
-      <ion-accordion
-        *ngFor="let group of store.groupedContactSources(); trackBy: store.trackByContactSource"
-        [value]="group.source"
-      >
-        <ion-item slot="header" lines="none" button detail="false" class="sources-accordion__header">
-          <ion-label>{{ group.source }}</ion-label>
-        </ion-item>
+      @for (group of store.groupedContactSources(); track group.source) {
+        <ion-accordion [value]="group.source">
+          <ion-item slot="header" lines="none" button detail="false" class="sources-accordion__header">
+            <ion-label>{{ group.source }}</ion-label>
+          </ion-item>
 
-        <div slot="content" class="sources-panel">
-          <a
-            *ngFor="let list of group.lists; trackBy: store.trackByContactSourceList"
-            class="sources-row"
-            [class.active]="store.activeContactListId === list.id"
-            [routerLink]="['/tabs/contact/list']"
-            (click)="store.setActiveContactList(list.id)"
-          >
-            <span class="sources-row__title">{{ list.title }}</span>
-            <span class="sources-row__count">{{ store.contactListCount(list.id) }}</span>
-            <ion-icon name="chevron-forward-outline"></ion-icon>
-          </a>
-        </div>
-      </ion-accordion>
+          <div slot="content" class="sources-panel">
+            @for (list of group.lists; track list.id) {
+              <a
+                class="sources-row"
+                [class.active]="store.activeContactListId === list.id"
+                [routerLink]="['/tabs/contact/list']"
+                (click)="store.setActiveContactList(list.id)"
+              >
+                <span class="sources-row__title">{{ list.title }}</span>
+                <span class="sources-row__count">{{ store.contactListCount(list.id) }}</span>
+                <ion-icon name="chevron-forward-outline"></ion-icon>
+              </a>
+            }
+          </div>
+        </ion-accordion>
+      }
     </ion-accordion-group>
   </app-page-inset>
 </ion-content>

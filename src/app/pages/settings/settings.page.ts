@@ -1,4 +1,3 @@
-import { NgFor } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { PageInsetComponent } from '../../components/page-inset/page-inset.component';
@@ -6,7 +5,7 @@ import { PageInsetComponent } from '../../components/page-inset/page-inset.compo
 @Component({
   selector: 'app-settings-page',
   standalone: true,
-  imports: [NgFor, IonicModule, PageInsetComponent],
+  imports: [IonicModule, PageInsetComponent],
   templateUrl: './settings.page.html',
   styleUrls: ['./settings.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

@@ -1,32 +1,38 @@
 <section class="directory-card">
   <div class="directory-sections">
-    <section class="directory-section" *ngFor="let group of store.groupedDirectory(); trackBy: store.trackByDirectoryCategory">
-      <div class="letter-heading">
-        <span>{{ group.category }}</span>
-      </div>
-
-      <article class="directory-entry" *ngFor="let entry of group.items; trackBy: store.trackByDirectory">
-        <div class="directory-main">
-          <div>
-            <h3>{{ entry.name }}</h3>
-            <p>{{ entry.department }}</p>
-          </div>
-          <a class="directory-phone" [href]="'tel:' + entry.phone">{{ entry.phone }}</a>
+    @for (group of store.groupedDirectory(); track group.category) {
+      <section class="directory-section">
+        <div class="letter-heading">
+          <span>{{ group.category }}</span>
         </div>
 
-        <div class="meta-row">
-          <span class="meta-pill subtle">{{ entry.city }}</span>
-          <span class="meta-pill">{{ entry.hours }}</span>
-        </div>
+        @for (entry of group.items; track entry.id) {
+          <article class="directory-entry">
+            <div class="directory-main">
+              <div>
+                <h3>{{ entry.name }}</h3>
+                <p>{{ entry.department }}</p>
+              </div>
+              <a class="directory-phone" [href]="'tel:' + entry.phone">{{ entry.phone }}</a>
+            </div>
 
-        <p class="directory-address">{{ entry.address }}</p>
+            <div class="meta-row">
+              <span class="meta-pill subtle">{{ entry.city }}</span>
+              <span class="meta-pill">{{ entry.hours }}</span>
+            </div>
 
-        <div class="meta-row">
-          <span class="meta-pill tag" *ngFor="let tag of entry.tags">{{ tag }}</span>
-        </div>
+            <p class="directory-address">{{ entry.address }}</p>
 
-        <a class="directory-link" [href]="entry.website" target="_blank">Открыть сайт</a>
-      </article>
-    </section>
+            <div class="meta-row">
+              @for (tag of entry.tags; track tag) {
+                <span class="meta-pill tag">{{ tag }}</span>
+              }
+            </div>
+
+            <a class="directory-link" [href]="entry.website" target="_blank">Открыть сайт</a>
+          </article>
+        }
+      </section>
+    }
   </div>
 </section>

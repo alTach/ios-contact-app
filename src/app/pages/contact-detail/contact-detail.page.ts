@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
@@ -10,7 +9,7 @@ import { ContactsWorkspaceStore } from '../../state/contacts-workspace.store';
 @Component({
   selector: 'app-contact-detail-page',
   standalone: true,
-  imports: [NgFor, NgIf, IonicModule, PageInsetComponent],
+  imports: [IonicModule, PageInsetComponent],
   templateUrl: './contact-detail.page.html',
   styleUrls: ['./contact-detail.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

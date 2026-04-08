@@ -12,15 +12,17 @@
     </div>
   </div>
 
-  <div class="search-wrap" [class.open]="store.searchOpen" *ngIf="!isContactsTab">
-    <ion-searchbar
-      #searchInput
-      [animated]="true"
-      placeholder="Поиск по ФИО, организации, тегам"
-      [(ngModel)]="store.searchTerm"
-      show-clear-button="focus"
-    ></ion-searchbar>
-  </div>
+  @if (!isContactsTab) {
+    <div class="search-wrap" [class.open]="store.searchOpen">
+      <ion-searchbar
+        #searchInput
+        [animated]="true"
+        placeholder="Поиск по ФИО, организации, тегам"
+        [(ngModel)]="store.searchTerm"
+        show-clear-button="focus"
+      ></ion-searchbar>
+    </div>
+  }
 
   <div class="select-row">
     <ion-select
@@ -30,115 +32,127 @@
       [value]="store.activeGroup"
       (ionChange)="store.setGroup($event.detail.value)"
     >
-      <ion-select-option *ngFor="let group of store.groups" [value]="group">{{ group }}</ion-select-option>
+      @for (group of store.groups; track group) {
+        <ion-select-option [value]="group">{{ group }}</ion-select-option>
+      }
     </ion-select>
   </div>
 
-  <div class="chip-row muted" *ngIf="tab === 'recent'">
-    <button
-      *ngFor="let filter of store.filters"
-      class="chip-button"
-      [class.active]="store.activeFilter === filter.key"
-      (click)="store.setFilter(filter.key)"
-    >
-      {{ filter.label }}
-    </button>
-  </div>
+  @if (tab === 'recent') {
+    <div class="chip-row muted">
+      @for (filter of store.filters; track filter.key) {
+        <button
+          class="chip-button"
+          [class.active]="store.activeFilter === filter.key"
+          (click)="store.setFilter(filter.key)"
+        >
+          {{ filter.label }}
+        </button>
+      }
+    </div>
+  }
 </section>
 
 <section class="list-card">
-  <div class="selection-badge" *ngIf="store.selectionMode">{{ store.selectedIds.size }} выбрано</div>
-  <div class="inline-feedback" *ngIf="store.addContactPressed">Новая карточка контакта может открыться здесь или через отдельную форму создания.</div>
+  @if (store.selectionMode) {
+    <div class="selection-badge">{{ store.selectedIds.size }} выбрано</div>
+  }
+  @if (store.addContactPressed) {
+    <div class="inline-feedback">Новая карточка контакта может открыться здесь или через отдельную форму создания.</div>
+  }
 
-  <article class="portal-card" *ngIf="store.activePortalCard() as card">
-    <div class="portal-card__header">
-      <h3>{{ card.title }}</h3>
-      <button class="portal-card__close" type="button" (click)="store.dismissPortalCard()" aria-label="Закрыть">
-        <ion-icon name="close-outline"></ion-icon>
-      </button>
-    </div>
-    <p class="portal-card__message">{{ card.message }}</p>
-    <div class="portal-card__divider"></div>
-    <div class="portal-card__actions">
-      <button
-        class="portal-button"
-        type="button"
-        (click)="store.handlePortalAction(card.actions[0].action)"
-      >
-        {{ card.actions[0].label }}
-      </button>
-    </div>
-  </article>
+  @if (store.activePortalCard(); as card) {
+    <article class="portal-card">
+      <div class="portal-card__header">
+        <h3>{{ card.title }}</h3>
+        <button class="portal-card__close" type="button" (click)="store.dismissPortalCard()" aria-label="Закрыть">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+      <p class="portal-card__message">{{ card.message }}</p>
+      <div class="portal-card__divider"></div>
+      <div class="portal-card__actions">
+        <button
+          class="portal-button"
+          type="button"
+          (click)="store.handlePortalAction(card.actions[0].action)"
+        >
+          {{ card.actions[0].label }}
+        </button>
+      </div>
+    </article>
+  }
 
   <div class="list-layout">
     <div class="contact-sections">
-      <ng-container *ngIf="viewMode === 'simple'; else extendedSections">
-        <ion-item-group
-          *ngFor="let section of store.groupedListContacts(tab); trackBy: store.trackByLetter"
-          [attr.id]="'letter-' + section.letter"
-        >
-          <div class="extended-section-header">
-            <ion-label class="extended-section-letter">{{ section.letter }}</ion-label>
-            <ion-item-divider class="extended-section-divider"></ion-item-divider>
-          </div>
+      @if (viewMode === 'simple') {
+        @for (section of store.groupedListContacts(tab); track section.letter) {
+          <ion-item-group [attr.id]="'letter-' + section.letter">
+            <div class="extended-section-header">
+              <ion-label class="extended-section-letter">{{ section.letter }}</ion-label>
+              <ion-item-divider class="extended-section-divider"></ion-item-divider>
+            </div>
 
-          <ion-item
-            button
-            detail="false"
-            *ngFor="let contact of section.contacts; trackBy: store.trackByContact"
-            class="simple-list-item"
-            [routerLink]="['/contact', contact.id]"
-          >
-            <ion-checkbox
-              *ngIf="store.selectionMode"
-              slot="start"
-              [checked]="store.isSelected(contact.id)"
-              (click)="$event.stopPropagation()"
-              (ionChange)="store.toggleSelection(contact.id)"
-            ></ion-checkbox>
-            <ion-label>{{ contact.fullName }}</ion-label>
-          </ion-item>
-        </ion-item-group>
-      </ng-container>
+            @for (contact of section.contacts; track contact.id) {
+              <ion-item
+                button
+                detail="false"
+                class="simple-list-item"
+                [routerLink]="['/contact', contact.id]"
+              >
+                @if (store.selectionMode) {
+                  <ion-checkbox
+                    slot="start"
+                    [checked]="store.isSelected(contact.id)"
+                    (click)="$event.stopPropagation()"
+                    (ionChange)="store.toggleSelection(contact.id)"
+                  ></ion-checkbox>
+                }
+                <ion-label>{{ contact.fullName }}</ion-label>
+              </ion-item>
+            }
+          </ion-item-group>
+        }
+      } @else {
+        @for (section of store.groupedListContacts(tab); track section.letter) {
+          <ion-item-group [attr.id]="'letter-' + section.letter">
+            <div class="extended-section-header">
+              <ion-label class="extended-section-letter">{{ section.letter }}</ion-label>
+              <ion-item-divider class="extended-section-divider"></ion-item-divider>
+            </div>
 
-      <ng-template #extendedSections>
-        <ion-item-group
-          *ngFor="let section of store.groupedListContacts(tab); trackBy: store.trackByLetter"
-          [attr.id]="'letter-' + section.letter"
-        >
-          <div class="extended-section-header">
-            <ion-label class="extended-section-letter">{{ section.letter }}</ion-label>
-            <ion-item-divider class="extended-section-divider"></ion-item-divider>
-          </div>
-
-          <ion-item
-            button
-            detail="false"
-            *ngFor="let contact of section.contacts; trackBy: store.trackByContact"
-            [routerLink]="['/contact', contact.id]"
-          >
-            <ion-checkbox
-              *ngIf="store.selectionMode"
-              slot="start"
-              [checked]="store.isSelected(contact.id)"
-              (click)="$event.stopPropagation()"
-              (ionChange)="store.toggleSelection(contact.id)"
-            ></ion-checkbox>
-            <app-contact-list-row [contact]="contact" [subtitle]="contact.occupation + ' · ' + contact.organization"></app-contact-list-row>
-          </ion-item>
-        </ion-item-group>
-      </ng-template>
+            @for (contact of section.contacts; track contact.id) {
+              <ion-item
+                button
+                detail="false"
+                [routerLink]="['/contact', contact.id]"
+              >
+                @if (store.selectionMode) {
+                  <ion-checkbox
+                    slot="start"
+                    [checked]="store.isSelected(contact.id)"
+                    (click)="$event.stopPropagation()"
+                    (ionChange)="store.toggleSelection(contact.id)"
+                  ></ion-checkbox>
+                }
+                <app-contact-list-row [contact]="contact" [subtitle]="contact.occupation + ' · ' + contact.organization"></app-contact-list-row>
+              </ion-item>
+            }
+          </ion-item-group>
+        }
+      }
     </div>
 
 
     <aside class="alphabet-rail">
-      <button
-        *ngFor="let letter of store.alphabet"
-        class="alphabet-button"
-        (click)="store.jumpToLetter(letter)"
-      >
-        {{ letter }}
-      </button>
+      @for (letter of store.alphabet; track letter) {
+        <button
+          class="alphabet-button"
+          (click)="store.jumpToLetter(letter)"
+        >
+          {{ letter }}
+        </button>
+      }
     </aside>
   </div>
 

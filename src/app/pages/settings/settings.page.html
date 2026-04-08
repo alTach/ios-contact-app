@@ -15,27 +15,33 @@
           <section class="settings-section">
             <p class="eyebrow">1. Синхронизация</p>
             <div class="settings-list">
-              <article class="settings-item" *ngFor="let provider of syncProviders">
-                <div>
-                  <h3>{{ provider.title }}</h3>
-                  <p>{{ provider.description }}</p>
-                </div>
-                <ion-toggle [checked]="provider.enabled"></ion-toggle>
-              </article>
+              @for (provider of syncProviders; track provider.title) {
+                <article class="settings-item">
+                  <div>
+                    <h3>{{ provider.title }}</h3>
+                    <p>{{ provider.description }}</p>
+                  </div>
+                  <ion-toggle [checked]="provider.enabled"></ion-toggle>
+                </article>
+              }
             </div>
           </section>
 
           <section class="settings-section">
             <p class="eyebrow">Кого синхронизировать</p>
             <div class="chip-row">
-              <span class="chip-button static" *ngFor="let scope of syncScopes">{{ scope }}</span>
+              @for (scope of syncScopes; track scope) {
+                <span class="chip-button static">{{ scope }}</span>
+              }
             </div>
           </section>
 
           <section class="settings-section">
             <p class="eyebrow">Экспорт</p>
             <div class="chip-row">
-              <span class="chip-button static" *ngFor="let option of exportOptions">{{ option }}</span>
+              @for (option of exportOptions; track option) {
+                <span class="chip-button static">{{ option }}</span>
+              }
             </div>
           </section>
         </section>

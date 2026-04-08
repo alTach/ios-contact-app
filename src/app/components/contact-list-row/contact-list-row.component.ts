@@ -1,4 +1,3 @@
-import { NgIf } from '@angular/common';
 import { ChangeDetectionStrategy, Component, Input } from '@angular/core';
 
 import { ContactCard } from '../../data/app-data.models';
@@ -7,7 +6,7 @@ import { AvatarComponent } from '../avatar/avatar.component';
 @Component({
   selector: 'app-contact-list-row',
   standalone: true,
-  imports: [NgIf, AvatarComponent],
+  imports: [AvatarComponent],
   templateUrl: './contact-list-row.component.html',
   styleUrls: ['./contact-list-row.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

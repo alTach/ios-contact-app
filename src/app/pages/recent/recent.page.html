@@ -16,29 +16,30 @@
     <div class="background-glow background-glow-b"></div>
 
     <section class="list-card recent-list-card">
-      <ion-item
-        detail="false"
-        *ngFor="let contact of store.listContacts('recent'); trackBy: store.trackByContact"
-        class="recent-item"
-      >
-        <app-contact-list-row
-          [contact]="contact"
-          [titleTone]="store.isMissedCall(contact) ? 'danger' : 'default'"
+      @for (contact of store.listContacts('recent'); track contact.id) {
+        <ion-item
+          detail="false"
+          class="recent-item"
         >
-          <span contact-row-subtitle class="recent-meta">
-            <ion-icon [name]="store.recentCallIcon(contact)"></ion-icon>
-            <span>{{ store.recentSource(contact) }}</span>
-          </span>
-        </app-contact-list-row>
-        <ion-button
-          slot="end"
-          fill="clear"
-          [routerLink]="['/contact', contact.id]"
-          aria-label="О контакте"
-        >
-          <ion-icon slot="icon-only" name="information-circle-outline"></ion-icon>
-        </ion-button>
-      </ion-item>
+          <app-contact-list-row
+            [contact]="contact"
+            [titleTone]="store.isMissedCall(contact) ? 'danger' : 'default'"
+          >
+            <span contact-row-subtitle class="recent-meta">
+              <ion-icon [name]="store.recentCallIcon(contact)"></ion-icon>
+              <span>{{ store.recentSource(contact) }}</span>
+            </span>
+          </app-contact-list-row>
+          <ion-button
+            slot="end"
+            fill="clear"
+            [routerLink]="['/contact', contact.id]"
+            aria-label="О контакте"
+          >
+            <ion-icon slot="icon-only" name="information-circle-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+      }
     </section>
   </app-page-inset>
 </ion-content>

@@ -7,7 +7,9 @@
       (ionChange)="store.setCallSource($event.detail.value)"
       aria-label="Источник звонка"
     >
-      <ion-select-option *ngFor="let source of store.callSources" [value]="source">{{ source }}</ion-select-option>
+      @for (source of store.callSources; track source) {
+        <ion-select-option [value]="source">{{ source }}</ion-select-option>
+      }
     </ion-select>
 
     <ion-select
@@ -30,39 +32,39 @@
 
   <div class="dial-suggestions">
     <div class="dial-suggestion-row dial-suggestion-row--primary">
-      <ng-container *ngIf="store.dialNumber; else emptyPrimary">
-        <button
-          *ngIf="store.topKeypadMatch() as contact; else directoryLookup"
-          class="dial-match"
-          type="button"
-          (click)="store.fillDialFromContact(contact)"
-        >
-          <ion-icon class="dial-suggestion-icon" name="person-circle-outline"></ion-icon>
-          <span class="dial-match__text">
-            <span>{{ contact.fullName }}</span>
-            <small>{{ store.contactPhone(contact) }}</small>
-          </span>
-        </button>
-        <ng-template #directoryLookup>
+      @if (store.dialNumber) {
+        @if (store.topKeypadMatch(); as contact) {
+          <button
+            class="dial-match"
+            type="button"
+            (click)="store.fillDialFromContact(contact)"
+          >
+            <ion-icon class="dial-suggestion-icon" name="person-circle-outline"></ion-icon>
+            <span class="dial-match__text">
+              <span>{{ contact.fullName }}</span>
+              <small>{{ store.contactPhone(contact) }}</small>
+            </span>
+          </button>
+        } @else {
           <a class="dial-directory-link" routerLink="/tabs/directory">Найти в справочнике</a>
-        </ng-template>
-      </ng-container>
-      <ng-template #emptyPrimary>
+        }
+      } @else {
         <span class="dial-suggestion-placeholder"></span>
-      </ng-template>
+      }
     </div>
 
     <div class="dial-suggestion-divider" [class.invisible]="!(store.remainingKeypadMatchesCount() > 0)"></div>
     <div class="dial-suggestion-row dial-suggestion-row--secondary">
-      <button
-        *ngIf="store.remainingKeypadMatchesCount() > 0"
-        class="dial-more"
-        type="button"
-        (click)="store.openKeypadMatchesModal()"
-      >
-        <ion-icon class="dial-suggestion-icon" name="people-outline"></ion-icon>
-        Еще {{ store.remainingKeypadMatchesCount() }} контактов
-      </button>
+      @if (store.remainingKeypadMatchesCount() > 0) {
+        <button
+          class="dial-more"
+          type="button"
+          (click)="store.openKeypadMatchesModal()"
+        >
+          <ion-icon class="dial-suggestion-icon" name="people-outline"></ion-icon>
+          Еще {{ store.remainingKeypadMatchesCount() }} контактов
+        </button>
+      }
     </div>
   </div>
 
@@ -85,19 +87,18 @@
       <ion-icon name="call-outline"></ion-icon>
     </button>
 
-    <button
-      *ngIf="store.dialNumber; else erasePlaceholder"
-      class="erase-button"
-      type="button"
-      (click)="store.removeDigit()"
-      aria-label="Стереть"
-    >
-      <ion-icon name="backspace-outline"></ion-icon>
-    </button>
-
-    <ng-template #erasePlaceholder>
+    @if (store.dialNumber) {
+      <button
+        class="erase-button"
+        type="button"
+        (click)="store.removeDigit()"
+        aria-label="Стереть"
+      >
+        <ion-icon name="backspace-outline"></ion-icon>
+      </button>
+    } @else {
       <span class="dial-grid-spacer" aria-hidden="true"></span>
-    </ng-template>
+    }
   </div>
 </section>
 
@@ -127,21 +128,22 @@
       </ion-header>
 
       <div class="keypad-matches-sheet">
-        <button
-          *ngFor="let contact of store.keypadMatchesSearchResults()"
-          class="keypad-match-item"
-          type="button"
-          (click)="store.fillDialFromContact(contact)"
-        >
-          <app-avatar [initials]="store.contactInitials(contact)"></app-avatar>
-          <span class="keypad-match-text">
-            <span class="keypad-match-name">{{ contact.fullName }}</span>
-            <small>{{ store.contactPhone(contact) }}</small>
-          </span>
-          <span class="keypad-match-call">
-            <ion-icon name="call-outline"></ion-icon>
-          </span>
-        </button>
+        @for (contact of store.keypadMatchesSearchResults(); track contact.id) {
+          <button
+            class="keypad-match-item"
+            type="button"
+            (click)="store.fillDialFromContact(contact)"
+          >
+            <app-avatar [initials]="store.contactInitials(contact)"></app-avatar>
+            <span class="keypad-match-text">
+              <span class="keypad-match-name">{{ contact.fullName }}</span>
+              <small>{{ store.contactPhone(contact) }}</small>
+            </span>
+            <span class="keypad-match-call">
+              <ion-icon name="call-outline"></ion-icon>
+            </span>
+          </button>
+        }
       </div>
     </ion-content>
   </ng-template>

@@ -17,15 +17,17 @@
     </ion-buttons>
   </ion-toolbar>
 
-  <ion-toolbar *ngIf="store.searchOpen">
-    <ion-searchbar
-      #searchInput
-      [animated]="true"
-      placeholder="Поиск по ФИО, организации, тегам"
-      [(ngModel)]="store.searchTerm"
-      show-clear-button="focus"
-    ></ion-searchbar>
-  </ion-toolbar>
+  @if (store.searchOpen) {
+    <ion-toolbar>
+      <ion-searchbar
+        #searchInput
+        [animated]="true"
+        placeholder="Поиск по ФИО, организации, тегам"
+        [(ngModel)]="store.searchTerm"
+        show-clear-button="focus"
+      ></ion-searchbar>
+    </ion-toolbar>
+  }
 </ion-header>
 
 <ion-content [fullscreen]="true" class="shell">

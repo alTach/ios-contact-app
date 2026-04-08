@@ -1,4 +1,3 @@
-import { NgFor, NgIf } from '@angular/common';
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -10,7 +9,7 @@ import { ContactsTabKey, ContactsWorkspaceStore, ViewMode } from '../../state/co
 @Component({
   selector: 'app-contacts-tab-view',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, IonicModule, RouterLink, ContactListRowComponent],
+  imports: [FormsModule, IonicModule, RouterLink, ContactListRowComponent],
   templateUrl: './contacts-tab-view.component.html',
   styleUrls: ['./contacts-tab-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

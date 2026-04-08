@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { SelectCustomEvent } from '@ionic/angular';
@@ -11,7 +10,7 @@ import { ContactsWorkspaceStore } from '../../state/contacts-workspace.store';
 @Component({
   selector: 'app-keypad-view',
   standalone: true,
-  imports: [NgFor, NgIf, FormsModule, IonicModule, RouterLink, AvatarComponent],
+  imports: [FormsModule, IonicModule, RouterLink, AvatarComponent],
   templateUrl: './keypad-view.component.html',
   styleUrls: ['./keypad-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

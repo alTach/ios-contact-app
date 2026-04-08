@@ -1,4 +1,3 @@
-import { NgFor } from '@angular/common';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
@@ -9,7 +8,7 @@ import { ContactsWorkspaceStore } from '../../state/contacts-workspace.store';
 @Component({
   selector: 'app-recent-page',
   standalone: true,
-  imports: [NgFor, IonicModule, RouterLink, ContactListRowComponent, PageInsetComponent],
+  imports: [IonicModule, RouterLink, ContactListRowComponent, PageInsetComponent],
   templateUrl: './recent.page.html',
   styleUrls: ['./recent.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush

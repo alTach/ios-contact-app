@@ -18,7 +18,7 @@
     <div class="background-glow background-glow-a"></div>
     <div class="background-glow background-glow-b"></div>
 
-    <ng-container *ngIf="contact as contact">
+    @if (contact; as contact) {
       <section class="list-card detail-page-card">
         <div class="profile-hero">
           <div class="profile-avatar">{{ contact.lastName[0] }}{{ contact.firstName[0] }}</div>
@@ -43,7 +43,9 @@
           <article class="info-card">
             <p class="eyebrow">Метки</p>
             <div class="meta-row">
-              <span class="meta-pill tag" *ngFor="let tag of contact.tags">{{ tag }}</span>
+              @for (tag of contact.tags; track tag) {
+                <span class="meta-pill tag">{{ tag }}</span>
+              }
             </div>
           </article>
         </div>
@@ -58,6 +60,6 @@
           <a [href]="contact.socials.tiktok" target="_blank">TikTok</a>
         </article>
       </section>
-    </ng-container>
+    }
   </app-page-inset>
 </ion-content>
