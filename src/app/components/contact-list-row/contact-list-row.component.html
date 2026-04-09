@@ -1,4 +1,14 @@
-<app-avatar [initials]="initials"></app-avatar>
+@if (selectionMode) {
+  <ion-checkbox
+    class="contact-list-row__selector"
+    [checked]="selected"
+    (click)="$event.stopPropagation()"
+    (ionChange)="selectionToggle.emit()"
+    aria-label="Выбрать контакт"
+  ></ion-checkbox>
+} @else {
+  <app-avatar [initials]="initials"></app-avatar>
+}
 <span class="contact-list-row__body">
   <span class="contact-list-row__title" [class.contact-list-row__title--danger]="titleTone === 'danger'">
     {{ contact.fullName }}

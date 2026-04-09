@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { ContactListRowComponent } from '../contact-list-row/contact-list-row.component';
@@ -9,7 +9,7 @@ import { ContactsTabKey, ContactsWorkspaceStore, ViewMode } from '../../state/co
 @Component({
   selector: 'app-contacts-tab-view',
   standalone: true,
-  imports: [FormsModule, IonicModule, RouterLink, ContactListRowComponent],
+  imports: [FormsModule, IonicModule, ContactListRowComponent],
   templateUrl: './contacts-tab-view.component.html',
   styleUrls: ['./contacts-tab-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -17,9 +17,14 @@ import { ContactsTabKey, ContactsWorkspaceStore, ViewMode } from '../../state/co
 export class ContactsTabViewComponent implements AfterViewInit {
   @Input({ required: true }) tab!: ContactsTabKey;
   @Input() viewMode: ViewMode = 'simple';
+  @Input() selectionMode = false;
+  @Input() selectionVersion = 0;
   @ViewChild('searchInput') searchInput?: ElementRef<{ setFocus: () => Promise<void> }>;
 
-  constructor(public readonly store: ContactsWorkspaceStore) {}
+  constructor(
+    public readonly store: ContactsWorkspaceStore,
+    private readonly router: Router
+  ) {}
 
   ngAfterViewInit(): void {
     if (this.store.searchOpen) {
@@ -49,5 +54,14 @@ export class ContactsTabViewComponent implements AfterViewInit {
 
   get isContactsTab(): boolean {
     return this.tab === 'contacts';
+  }
+
+  handleContactPress(contactId: number): void {
+    if (this.selectionMode) {
+      this.store.toggleSelection(contactId);
+      return;
+    }
+
+    void this.router.navigate(['/contact', contactId]);
   }
 }

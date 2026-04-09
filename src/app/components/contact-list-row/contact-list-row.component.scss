@@ -7,6 +7,18 @@
   padding: 12px 0;
 }
 
+.contact-list-row__selector {
+  --size: 20px;
+  --checkbox-background-checked: var(--ion-color-primary, #3880ff);
+  --border-color-checked: var(--ion-color-primary, #3880ff);
+  --checkmark-color: #ffffff;
+  flex: 0 0 32px;
+  width: 32px;
+  min-width: 32px;
+  height: 32px;
+  margin: 0;
+}
+
 .contact-list-row__body {
   display: flex;
   min-width: 0;

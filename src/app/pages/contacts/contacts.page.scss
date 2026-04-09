@@ -7,6 +7,129 @@ ion-button {
   --color: #15181f;
 }
 
+.contacts-header-actions {
+  position: relative;
+  min-width: 40px;
+  justify-content: flex-end;
+}
+
+.contacts-menu-trigger {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.contacts-add-trigger {
+  position: absolute;
+  top: 50%;
+  right: 36px;
+  transform: translateY(-50%);
+}
+
+.contacts-menu-trigger--hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.selection-toolbar {
+  --padding-start: 12px;
+  --padding-end: 12px;
+  --min-height: 56px;
+  min-height: 56px;
+}
+
+.contacts-search-toolbar {
+  --min-height: 56px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+}
+
+.contacts-search-toolbar ion-searchbar {
+  --padding-top: 0;
+  --padding-bottom: 0;
+  margin: 0;
+}
+
+.selection-toolbar__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  flex-wrap: nowrap;
+}
+
+.selection-toolbar__icon,
+.contacts-menu__action {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: #15181f;
+}
+
+.selection-toolbar__checkbox,
+.selection-toolbar__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+}
+
+.selection-toolbar__checkbox {
+  --size: 20px;
+  --checkbox-background-checked: var(--ion-color-primary, #3880ff);
+  --border-color-checked: var(--ion-color-primary, #3880ff);
+  --checkmark-color: #ffffff;
+  flex: 0 0 auto;
+  margin: 0;
+}
+
+.selection-toolbar__icon ion-icon {
+  font-size: 20px;
+}
+
+.selection-toolbar__icon--merge ion-icon {
+  font-size: 21px;
+}
+
+.selection-toolbar__icon--delete svg {
+  width: 32px;
+  height: 32px;
+}
+
+.selection-toolbar__icon svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.selection-toolbar__count {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  flex: 0 1 auto;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.selection-toolbar__actions {
+  display: flex;
+  align-items: center;
+  flex: 0 0 auto;
+  flex-wrap: nowrap;
+  gap: 2px;
+  margin-left: auto;
+}
+
 ion-popover {
   --width: min(276px, calc(100vw - 28px));
   --box-shadow: 0 10px 30px rgba(21, 24, 31, 0.12);
@@ -15,6 +138,7 @@ ion-popover {
 }
 
 ion-popover::part(content) {
+  overflow: visible;
   background: rgba(255, 255, 255, 0.62);
   backdrop-filter: blur(24px) saturate(140%);
   -webkit-backdrop-filter: blur(24px) saturate(140%);
@@ -26,9 +150,39 @@ ion-popover::part(content) {
   --mode-border: rgba(21, 24, 31, 0.08);
   --mode-border-active: rgba(21, 24, 31, 0.18);
   --mode-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+  position: relative;
   padding: 14px;
   background: transparent;
-  overflow-x: hidden;
+  overflow: visible;
+}
+
+//.contacts-menu::before {
+//  content: none;
+//}
+//
+//.contacts-menu::after {
+//  content: '';
+//  position: absolute;
+//  top: -7px;
+//  right: 14px;
+//  width: 14px;
+//  height: 14px;
+//  z-index: 2;
+//  background: rgba(255, 255, 255, 0.62);
+//  transform: rotate(45deg);
+//  backdrop-filter: blur(24px) saturate(140%);
+//  -webkit-backdrop-filter: blur(24px) saturate(140%);
+//  border-top: 1px solid rgba(21, 24, 31, 0.06);
+//  border-left: 1px solid rgba(21, 24, 31, 0.06);
+//}
+
+.contacts-menu > * {
+  position: relative;
+  z-index: 3;
+}
+
+.contacts-menu--compact {
+  padding: 8px;
 }
 
 .contacts-menu__label {
@@ -85,11 +239,29 @@ ion-popover::part(content) {
   align-items: center;
 }
 
-.avatar-dot {
+.avatar-dot,
+.preview-radio-dot {
   width: 28px;
   height: 28px;
   border-radius: 50%;
+}
+
+.avatar-dot {
   background: rgba(21, 24, 31, 0.16);
+}
+
+.preview-radio-dot {
+  position: relative;
+  border: 1.5px solid rgba(21, 24, 31, 0.28);
+  background: rgba(255, 255, 255, 0.65);
+}
+
+.preview-radio-dot::after {
+  content: '';
+  position: absolute;
+  inset: 8px;
+  border-radius: 50%;
+  background: rgba(21, 24, 31, 0.18);
 }
 
 .text-lines {
@@ -160,12 +332,44 @@ ion-popover::part(content) {
   background: rgba(21, 24, 31, 0.08);
 }
 
-.contacts-menu__row {
+.contacts-menu__row,
+.contacts-menu__action {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
   gap: 12px;
   min-height: 40px;
+  width: 100%;
   color: #15181f;
+  font-size: 15px;
+  line-height: 1.2;
   text-decoration: none;
+}
+
+.contacts-menu__row {
+  justify-content: space-between;
+}
+
+.contacts-menu__action {
+  justify-content: flex-start;
+  min-height: 40px;
+  padding: 0;
+  text-align: left;
+}
+
+.contacts-menu__row-main {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.contacts-menu__row ion-icon,
+.contacts-menu__action ion-icon {
+  flex: 0 0 auto;
+  width: 18px;
+  font-size: 18px;
+}
+
+.contacts-menu__action--danger {
+  color: #c62828;
 }

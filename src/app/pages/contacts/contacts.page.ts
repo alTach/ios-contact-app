@@ -16,7 +16,8 @@ import { ContactsWorkspaceStore, ViewMode } from '../../state/contacts-workspace
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContactsPage {
-  @ViewChild(IonPopover) private popover?: IonPopover;
+  @ViewChild('contactsMenuPopover') private contactsMenuPopover?: IonPopover;
+  @ViewChild('selectionMenuPopover') private selectionMenuPopover?: IonPopover;
 
   constructor(
     public readonly store: ContactsWorkspaceStore,
@@ -30,10 +31,36 @@ export class ContactsPage {
   }
 
   closeMenu(): void {
-    void this.popover?.dismiss();
+    void this.contactsMenuPopover?.dismiss();
+    this.cdr.markForCheck();
+  }
+
+  async enterSelectionMode(): Promise<void> {
+    if (!this.store.selectionMode) {
+      this.store.toggleSelectionMode();
+      this.cdr.markForCheck();
+    }
+    this.closeMenu();
+  }
+
+  closeSelectionMenu(): void {
+    void this.selectionMenuPopover?.dismiss();
+  }
+
+  async exitSelectionMode(): Promise<void> {
+    await this.selectionMenuPopover?.dismiss();
+    if (this.store.selectionMode) {
+      this.store.toggleSelectionMode();
+      this.cdr.markForCheck();
+    }
+    (document.activeElement as HTMLElement | null)?.blur();
   }
 
   goBackToSources(): void {
     void this.navController.navigateBack('/tabs/contact');
+  }
+
+  get showBackLabel(): boolean {
+    return this.store.currentContactListTitle().length <= 7;
   }
 }

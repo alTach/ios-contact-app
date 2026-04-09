@@ -3,22 +3,74 @@
     <ion-buttons slot="start">
       <ion-button fill="clear" (click)="goBackToSources()" aria-label="Списки">
         <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
-        <ion-label>Списки</ion-label>
+        @if (showBackLabel) {
+          <ion-label>Списки</ion-label>
+        }
       </ion-button>
     </ion-buttons>
     <ion-title>{{ store.currentContactListTitle() }}</ion-title>
-    <ion-buttons slot="end">
-      <ion-button fill="clear" (click)="store.toggleSearch()" aria-label="Поиск">
-        <ion-icon slot="icon-only" name="search-outline"></ion-icon>
+    <ion-buttons slot="end" class="contacts-header-actions">
+      @if (store.selectionMode) {
+        <ion-button fill="clear" (click)="exitSelectionMode()">Отмена</ion-button>
+      }
+      <ion-button
+        class="contacts-add-trigger"
+        fill="clear"
+        aria-label="Добавить контакт"
+        (click)="store.addContact()"
+        [class.contacts-menu-trigger--hidden]="store.selectionMode"
+        [attr.aria-hidden]="store.selectionMode ? 'true' : null"
+        tabindex="0"
+      >
+        <ion-icon slot="icon-only" name="add-outline"></ion-icon>
       </ion-button>
-      <ion-button id="contacts-menu-trigger" fill="clear" aria-label="Ещё">
+      <ion-button
+        id="contacts-menu-trigger"
+        class="contacts-menu-trigger"
+        fill="clear"
+        aria-label="Ещё"
+        [class.contacts-menu-trigger--hidden]="store.selectionMode"
+        [attr.aria-hidden]="store.selectionMode ? 'true' : null"
+        tabindex="0"
+      >
         <ion-icon slot="icon-only" ios="ellipsis-horizontal" md="ellipsis-vertical"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 
-  @if (store.searchOpen) {
-    <ion-toolbar>
+  @if (store.selectionMode) {
+    <ion-toolbar class="selection-toolbar">
+      <div class="selection-toolbar__row">
+        <ion-checkbox
+          class="selection-toolbar__checkbox"
+          [checked]="store.someVisibleSelected('contacts')"
+          [indeterminate]="store.someVisibleSelected('contacts') && !store.allVisibleSelected('contacts')"
+          aria-label="Выбрать все"
+          (ionChange)="store.toggleSelectAllVisible('contacts')"
+        ></ion-checkbox>
+
+        <span class="selection-toolbar__count">Выбрано {{ store.selectedIds.size }}</span>
+
+        <div class="selection-toolbar__actions">
+          <button class="selection-toolbar__icon selection-toolbar__icon--merge" type="button" aria-label="Объединить">
+            <ion-icon name="git-merge-outline"></ion-icon>
+          </button>
+          <button class="selection-toolbar__icon selection-toolbar__icon--delete" type="button" aria-label="Удалить">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M5 8h10l4 4-4 4H5z"></path>
+            </svg>
+          </button>
+          <button class="selection-toolbar__icon" type="button" aria-label="Массовая рассылка">
+            <ion-icon name="mail-outline"></ion-icon>
+          </button>
+          <button id="selection-actions-trigger" class="selection-toolbar__icon" type="button" aria-label="Дополнительные действия">
+            <ion-icon ios="ellipsis-horizontal" md="ellipsis-vertical" name="ellipsis-vertical"></ion-icon>
+          </button>
+        </div>
+      </div>
+    </ion-toolbar>
+  } @else if (store.searchOpen) {
+    <ion-toolbar class="contacts-search-toolbar">
       <ion-searchbar
         #searchInput
         [animated]="true"
@@ -40,11 +92,24 @@
   <app-page-inset>
     <div class="background-glow background-glow-a"></div>
     <div class="background-glow background-glow-b"></div>
-    <app-contacts-tab-view tab="contacts" [viewMode]="store.viewMode"></app-contacts-tab-view>
+    <app-contacts-tab-view
+      tab="contacts"
+      [viewMode]="store.viewMode"
+      [selectionMode]="store.selectionMode"
+      [selectionVersion]="store.selectionVersion"
+    ></app-contacts-tab-view>
   </app-page-inset>
 </ion-content>
 
-<ion-popover trigger="contacts-menu-trigger" triggerAction="click" alignment="end" side="bottom" [showBackdrop]="false">
+<ion-popover
+  #contactsMenuPopover
+  trigger="contacts-menu-trigger"
+  triggerAction="click"
+  reference="trigger"
+  alignment="end"
+  side="bottom"
+  [showBackdrop]="false"
+>
   <ng-template>
     <div class="contacts-menu">
       <p class="contacts-menu__label">Режим отображения</p>
@@ -77,12 +142,12 @@
           aria-label="Универсальный режим"
         >
           <div class="mode-preview__frame mode-preview__frame--extended">
-            <span class="avatar-dot"></span>
+            <span class="preview-radio-dot"></span>
             <div class="text-lines">
               <span></span>
               <span></span>
             </div>
-            <span class="avatar-dot"></span>
+            <span class="preview-radio-dot"></span>
             <div class="text-lines">
               <span></span>
               <span></span>
@@ -97,10 +162,33 @@
 
       <div class="contacts-menu__divider"></div>
 
+      <button class="contacts-menu__action" type="button" (click)="enterSelectionMode()">
+        <ion-icon name="checkmark-circle-outline"></ion-icon>
+        <span>Выбрать</span>
+      </button>
+
       <a class="contacts-menu__row" routerLink="/settings" (click)="closeMenu()">
-        <ion-icon name="settings-outline"></ion-icon>
-        <span>Настройки</span>
+        <span class="contacts-menu__row-main">
+          <ion-icon name="settings-outline"></ion-icon>
+          <span>Настройки</span>
+        </span>
+        <ion-icon name="chevron-forward-outline"></ion-icon>
       </a>
+    </div>
+  </ng-template>
+</ion-popover>
+
+<ion-popover #selectionMenuPopover trigger="selection-actions-trigger" triggerAction="click" alignment="end" side="bottom" [showBackdrop]="false">
+  <ng-template>
+    <div class="contacts-menu contacts-menu--compact">
+      <button class="contacts-menu__action" type="button" (click)="closeSelectionMenu()">
+        <ion-icon name="download-outline"></ion-icon>
+        <span>Экспортировать</span>
+      </button>
+      <button class="contacts-menu__action contacts-menu__action--danger" type="button" (click)="closeSelectionMenu()">
+        <ion-icon name="trash-outline"></ion-icon>
+        <span>Удалить</span>
+      </button>
     </div>
   </ng-template>
 </ion-popover>

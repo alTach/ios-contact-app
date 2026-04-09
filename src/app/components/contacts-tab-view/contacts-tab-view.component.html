@@ -1,62 +1,34 @@
-<section class="toolbar-card">
-  <div class="toolbar-row">
-    <div class="toolbar-actions-left">
-      <ion-button fill="outline" shape="round" (click)="store.toggleSelectionMode()">
-        <ion-icon slot="start" name="checkmark-circle-outline"></ion-icon>
-        {{ store.selectionMode ? 'Снять выбор' : 'Выбрать несколько' }}
-      </ion-button>
-      <button class="add-contact-button" type="button" (click)="store.addContact()">
-        <ion-icon name="add-outline"></ion-icon>
-        Добавить контакт
-      </button>
-    </div>
-  </div>
+@if (!isContactsTab || tab === 'recent') {
+  <section class="toolbar-card">
+    @if (!isContactsTab) {
+      <div class="search-wrap" [class.open]="store.searchOpen">
+        <ion-searchbar
+          #searchInput
+          [animated]="true"
+          placeholder="Поиск по ФИО, организации, тегам"
+          [(ngModel)]="store.searchTerm"
+          show-clear-button="focus"
+        ></ion-searchbar>
+      </div>
+    }
 
-  @if (!isContactsTab) {
-    <div class="search-wrap" [class.open]="store.searchOpen">
-      <ion-searchbar
-        #searchInput
-        [animated]="true"
-        placeholder="Поиск по ФИО, организации, тегам"
-        [(ngModel)]="store.searchTerm"
-        show-clear-button="focus"
-      ></ion-searchbar>
-    </div>
-  }
-
-  <div class="select-row">
-    <ion-select
-      interface="popover"
-      label="Группа"
-      label-placement="stacked"
-      [value]="store.activeGroup"
-      (ionChange)="store.setGroup($event.detail.value)"
-    >
-      @for (group of store.groups; track group) {
-        <ion-select-option [value]="group">{{ group }}</ion-select-option>
-      }
-    </ion-select>
-  </div>
-
-  @if (tab === 'recent') {
-    <div class="chip-row muted">
-      @for (filter of store.filters; track filter.key) {
-        <button
-          class="chip-button"
-          [class.active]="store.activeFilter === filter.key"
-          (click)="store.setFilter(filter.key)"
-        >
-          {{ filter.label }}
-        </button>
-      }
-    </div>
-  }
-</section>
+    @if (tab === 'recent') {
+      <div class="chip-row muted">
+        @for (filter of store.filters; track filter.key) {
+          <button
+            class="chip-button"
+            [class.active]="store.activeFilter === filter.key"
+            (click)="store.setFilter(filter.key)"
+          >
+            {{ filter.label }}
+          </button>
+        }
+      </div>
+    }
+  </section>
+}
 
 <section class="list-card">
-  @if (store.selectionMode) {
-    <div class="selection-badge">{{ store.selectedIds.size }} выбрано</div>
-  }
   @if (store.addContactPressed) {
     <div class="inline-feedback">Новая карточка контакта может открыться здесь или через отдельную форму создания.</div>
   }
@@ -98,9 +70,9 @@
                 button
                 detail="false"
                 class="simple-list-item"
-                [routerLink]="['/contact', contact.id]"
+                (click)="handleContactPress(contact.id)"
               >
-                @if (store.selectionMode) {
+                @if (selectionMode) {
                   <ion-checkbox
                     slot="start"
                     [checked]="store.isSelected(contact.id)"
@@ -125,9 +97,9 @@
               <ion-item
                 button
                 detail="false"
-                [routerLink]="['/contact', contact.id]"
+                (click)="handleContactPress(contact.id)"
               >
-                @if (store.selectionMode) {
+                @if (selectionMode) {
                   <ion-checkbox
                     slot="start"
                     [checked]="store.isSelected(contact.id)"

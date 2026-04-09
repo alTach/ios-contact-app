@@ -41,7 +41,7 @@ export class ContactsWorkspaceStore {
   activeDataSource: ContactSourceKey = 'Google';
   activeContactListId = 'gmail-1';
   activeLetter = '';
-  searchOpen = false;
+  searchOpen = true;
   searchTerm = '';
   selectionMode = false;
   viewMode: ViewMode = 'simple';
@@ -53,6 +53,7 @@ export class ContactsWorkspaceStore {
   keypadMatchesSearch = '';
   sheetOpen = false;
   selectedIds = new Set<number>();
+  selectionVersion = 0;
   selectedContact: ContactCard | null = null;
   contacts: ContactCard[] = [];
   directoryEntries: DirectoryEntry[] = [];
@@ -143,18 +144,50 @@ export class ContactsWorkspaceStore {
     this.setActiveContactList(nextList.id);
   }
 
-  toggleSearch(): void {
-    this.searchOpen = !this.searchOpen;
-    if (!this.searchOpen) {
-      this.searchTerm = '';
-    }
-  }
+  // toggleSearch(): void {
+  //   this.searchOpen = !this.searchOpen;
+  //   if (!this.searchOpen) {
+  //     this.searchTerm = '';
+  //   }
+  // }
 
   toggleSelectionMode(): void {
     this.selectionMode = !this.selectionMode;
     if (!this.selectionMode) {
       this.selectedIds.clear();
     }
+    this.bumpSelectionVersion();
+  }
+
+  allVisibleSelected(tab: ContactsTabKey): boolean {
+    const visibleIds = this.listContacts(tab).map((contact) => contact.id);
+    return visibleIds.length > 0 && visibleIds.every((contactId) => this.selectedIds.has(contactId));
+  }
+
+  someVisibleSelected(tab: ContactsTabKey): boolean {
+    return this.listContacts(tab).some((contact) => this.selectedIds.has(contact.id));
+  }
+
+  toggleSelectAllVisible(tab: ContactsTabKey): void {
+    const visibleIds = this.listContacts(tab).map((contact) => contact.id);
+    if (!visibleIds.length) {
+      return;
+    }
+
+    if (this.allVisibleSelected(tab)) {
+      this.selectedIds.clear();
+      this.bumpSelectionVersion();
+      return;
+    }
+
+    if (this.someVisibleSelected(tab)) {
+      this.selectedIds.clear();
+      this.bumpSelectionVersion();
+      return;
+    }
+
+    visibleIds.forEach((contactId) => this.selectedIds.add(contactId));
+    this.bumpSelectionVersion();
   }
 
   setViewMode(mode: ViewMode): void {
@@ -177,9 +210,11 @@ export class ContactsWorkspaceStore {
   toggleSelection(contactId: number): void {
     if (this.selectedIds.has(contactId)) {
       this.selectedIds.delete(contactId);
+      this.bumpSelectionVersion();
       return;
     }
     this.selectedIds.add(contactId);
+    this.bumpSelectionVersion();
   }
 
   isSelected(contactId: number): boolean {
@@ -519,5 +554,9 @@ export class ContactsWorkspaceStore {
       case 'iCloud':
         return `icloud-${index}`;
     }
+  }
+
+  private bumpSelectionVersion(): void {
+    this.selectionVersion += 1;
   }
 }
