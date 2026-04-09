@@ -23,7 +23,7 @@ export class KeypadViewComponent {
       return;
     }
 
-    this.store.addContact();
+    this.store.openAddContactModal(this.store.dialNumber);
     event.target.value = undefined;
   }
 }

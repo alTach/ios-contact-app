@@ -7,6 +7,28 @@ export interface ContactSocials {
   tiktok: string;
 }
 
+export interface ContactAddress {
+  street: string;
+  city: string;
+  region: string;
+  country: string;
+  postalCode: string;
+}
+
+export interface AddContactDraft {
+  photoUrl: string;
+  lastName: string;
+  firstName: string;
+  company: string;
+  phones: string[];
+  emails: string[];
+  urls: string[];
+  address: ContactAddress;
+  customDate: string;
+  closePerson: string;
+  notes: string;
+}
+
 export interface ContactCard {
   id: number;
   firstName: string;
@@ -24,6 +46,14 @@ export interface ContactCard {
   city: string;
   note: string;
   socials: ContactSocials;
+  phones?: string[];
+  emails?: string[];
+  urls?: string[];
+  address?: ContactAddress;
+  customDate?: string;
+  closePerson?: string;
+  photoUrl?: string | null;
+  sourceListId?: string;
 }
 
 export interface DirectoryEntry {

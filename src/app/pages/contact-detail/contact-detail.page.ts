@@ -23,4 +23,8 @@ export class ContactDetailPage {
   get contact(): ContactCard | null {
     return this.store.contactById(this.contactId);
   }
+
+  addTag(): void {
+    this.store.addTagToContact(this.contactId);
+  }
 }

@@ -1,16 +1,18 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild } from '@angular/core';
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, ViewChild, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { IonPopover, IonicModule, NavController } from '@ionic/angular';
 
+import { AddContactSheetComponent } from '../../components/add-contact-sheet/add-contact-sheet.component';
 import { ContactsTabViewComponent } from '../../components/contacts-tab-view/contacts-tab-view.component';
+import { AddContactDraft } from '../../data/app-data.models';
 import { PageInsetComponent } from '../../components/page-inset/page-inset.component';
 import { ContactsWorkspaceStore, ViewMode } from '../../state/contacts-workspace.store';
 
 @Component({
   selector: 'app-contacts-page',
   standalone: true,
-  imports: [IonicModule, FormsModule, RouterLink, ContactsTabViewComponent, PageInsetComponent],
+  imports: [IonicModule, FormsModule, RouterLink, AddContactSheetComponent, ContactsTabViewComponent, PageInsetComponent],
   templateUrl: './contacts.page.html',
   styleUrls: ['./contacts.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -19,11 +21,11 @@ export class ContactsPage {
   @ViewChild('contactsMenuPopover') private contactsMenuPopover?: IonPopover;
   @ViewChild('selectionMenuPopover') private selectionMenuPopover?: IonPopover;
 
-  constructor(
-    public readonly store: ContactsWorkspaceStore,
-    private readonly cdr: ChangeDetectorRef,
-    private readonly navController: NavController
-  ) {}
+  readonly store = inject(ContactsWorkspaceStore);
+
+  private readonly cdr = inject(ChangeDetectorRef);
+
+  private readonly navController = inject(NavController);
 
   setViewMode(mode: ViewMode): void {
     this.store.setViewMode(mode);
@@ -35,7 +37,7 @@ export class ContactsPage {
     this.cdr.markForCheck();
   }
 
-  async enterSelectionMode(): Promise<void> {
+  enterSelectionMode(): void {
     if (!this.store.selectionMode) {
       this.store.toggleSelectionMode();
       this.cdr.markForCheck();
@@ -47,18 +49,24 @@ export class ContactsPage {
     void this.selectionMenuPopover?.dismiss();
   }
 
-  async exitSelectionMode(): Promise<void> {
-    await this.selectionMenuPopover?.dismiss();
-    if (this.store.selectionMode) {
-      this.store.toggleSelectionMode();
-      this.cdr.markForCheck();
-    }
-    (document.activeElement as HTMLElement | null)?.blur();
+  exitSelectionMode(): void {
+    void this.selectionMenuPopover?.dismiss().then(() => {
+      if (this.store.selectionMode) {
+        this.store.toggleSelectionMode();
+        this.cdr.markForCheck();
+      }
+      (document.activeElement as HTMLElement | null)?.blur();
+    });
   }
 
   goBackToSources(): void {
     void this.navController.navigateBack('/tabs/contact');
   }
+
+  saveContactDraft = (draft: AddContactDraft): void => {
+    this.store.saveNewContact(draft);
+    this.cdr.markForCheck();
+  };
 
   get showBackLabel(): boolean {
     return this.store.currentContactListTitle().length <= 7;

@@ -1,4 +1,4 @@
-@if (!isContactsTab || tab === 'recent') {
+@if (!isContactsTab || tab() === 'recent') {
   <section class="toolbar-card">
     @if (!isContactsTab) {
       <div class="search-wrap" [class.open]="store.searchOpen">
@@ -12,7 +12,7 @@
       </div>
     }
 
-    @if (tab === 'recent') {
+    @if (tab() === 'recent') {
       <div class="chip-row muted">
         @for (filter of store.filters; track filter.key) {
           <button
@@ -57,8 +57,8 @@
 
   <div class="list-layout">
     <div class="contact-sections">
-      @if (viewMode === 'simple') {
-        @for (section of store.groupedListContacts(tab); track section.letter) {
+      @if (viewMode() === 'simple') {
+        @for (section of store.groupedListContacts(tab()); track section.letter) {
           <ion-item-group [attr.id]="'letter-' + section.letter">
             <div class="extended-section-header">
               <ion-label class="extended-section-letter">{{ section.letter }}</ion-label>
@@ -72,7 +72,7 @@
                 class="simple-list-item"
                 (click)="handleContactPress(contact.id)"
               >
-                @if (selectionMode) {
+                @if (selectionMode()) {
                   <ion-checkbox
                     slot="start"
                     [checked]="store.isSelected(contact.id)"
@@ -86,7 +86,7 @@
           </ion-item-group>
         }
       } @else {
-        @for (section of store.groupedListContacts(tab); track section.letter) {
+        @for (section of store.groupedListContacts(tab()); track section.letter) {
           <ion-item-group [attr.id]="'letter-' + section.letter">
             <div class="extended-section-header">
               <ion-label class="extended-section-letter">{{ section.letter }}</ion-label>
@@ -99,15 +99,13 @@
                 detail="false"
                 (click)="handleContactPress(contact.id)"
               >
-                @if (selectionMode) {
-                  <ion-checkbox
-                    slot="start"
-                    [checked]="store.isSelected(contact.id)"
-                    (click)="$event.stopPropagation()"
-                    (ionChange)="store.toggleSelection(contact.id)"
-                  ></ion-checkbox>
-                }
-                <app-contact-list-row [contact]="contact" [subtitle]="contact.occupation + ' · ' + contact.organization"></app-contact-list-row>
+                <app-contact-list-row
+                  [contact]="contact"
+                  [subtitle]="contact.occupation + ' · ' + contact.organization"
+                  [selectionMode]="selectionMode()"
+                  [selected]="store.isSelected(contact.id)"
+                  (selectionToggle)="store.toggleSelection(contact.id)"
+                ></app-contact-list-row>
               </ion-item>
             }
           </ion-item-group>

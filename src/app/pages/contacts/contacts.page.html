@@ -17,7 +17,7 @@
         class="contacts-add-trigger"
         fill="clear"
         aria-label="Добавить контакт"
-        (click)="store.addContact()"
+        (click)="store.openAddContactModal()"
         [class.contacts-menu-trigger--hidden]="store.selectionMode"
         [attr.aria-hidden]="store.selectionMode ? 'true' : null"
         tabindex="0"
@@ -192,3 +192,10 @@
     </div>
   </ng-template>
 </ion-popover>
+
+<app-add-contact-sheet
+  [isOpen]="store.addContactModalOpen"
+  [prefillPhone]="store.addContactPrefillPhone"
+  (closed)="store.closeAddContactModal()"
+  (saved)="saveContactDraft($event)"
+></app-add-contact-sheet>

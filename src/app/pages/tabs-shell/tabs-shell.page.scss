@@ -1,3 +1,5 @@
+@use '../../shared/tokens' as tokens;
+
 :host {
   display: block;
 }
@@ -6,7 +8,6 @@
   --background: transparent;
   --border: 0;
   --color: rgba(21, 24, 31, 0.58);
-  --color-selected: #15181f;
   position: fixed;
   left: 12px;
   right: 12px;
@@ -46,7 +47,7 @@
 }
 
 .bottom-bar ion-tab-button.tab-selected {
-  color: var(--color-selected);
+  color: tokens.$color-ink;
   //background: rgba(255, 255, 255, 0.58);
 }
 

@@ -1,6 +1,8 @@
+@use '../../shared/tokens' as tokens;
+
 ion-toolbar {
   --background: #f3f4f6;
-  --border-color: var(--contact-divider-color, rgba(21, 24, 31, 0.08));
+  --border-color: #{tokens.$contact-divider-color};
 }
 
 ion-content.shell {
@@ -25,7 +27,7 @@ ion-content.shell {
 
 .sources-accordion__header {
   --background: #f3f4f6;
-  --color: var(--ink);
+  --color: #{tokens.$color-ink};
   --background-activated: transparent;
   --background-focused: transparent;
   --background-hover: transparent;
@@ -54,8 +56,8 @@ ion-content.shell {
   gap: 10px;
   width: 100%;
   min-height: 52px;
-  border-bottom: var(--contact-divider-width, 1px) solid var(--contact-divider-color, rgba(21, 24, 31, 0.08));
-  color: var(--ink);
+  border-bottom: tokens.$contact-divider-width solid tokens.$contact-divider-color;
+  color: tokens.$color-ink;
   text-decoration: none;
 }
 
@@ -71,11 +73,11 @@ ion-content.shell {
 }
 
 .sources-row__count {
-  color: var(--muted);
+  color: tokens.$color-muted;
   font-size: 14px;
 }
 
 .sources-row ion-icon {
-  color: var(--muted);
+  color: tokens.$color-muted;
   font-size: 17px;
 }

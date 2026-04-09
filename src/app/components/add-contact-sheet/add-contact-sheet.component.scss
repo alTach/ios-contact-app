@@ -1,0 +1,451 @@
+@use '../../shared/tokens' as tokens;
+
+$add-contact-inline-inset: 15px;
+$add-contact-block-inset: 12px;
+$add-contact-row-block: 15px;
+$add-contact-delete-width: 96px;
+$add-contact-delete-shift: 68px;
+
+:host {
+  display: block;
+}
+
+.add-contact-sheet {
+  --height: 98vh;
+  --max-height: 98vh;
+  --border-radius: 28px 28px 0 0;
+}
+
+.add-contact-sheet__page {
+  height: 100%;
+}
+
+.add-contact-sheet__content {
+  --background: #{tokens.$color-toolbar};
+}
+
+.add-contact-sheet__body {
+  padding: $add-contact-block-inset 0 calc(96px + env(safe-area-inset-bottom, 0px));
+}
+
+.add-contact-sheet__photo {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  width: 100%;
+  margin: 0 0 20px;
+  padding: 8px $add-contact-inline-inset 12px;
+  border: 0;
+  background: transparent;
+  color: tokens.$color-muted;
+  font-size: 14px;
+}
+
+.add-contact-sheet__photo-circle {
+  display: inline-grid;
+  place-items: center;
+  width: 82px;
+  height: 82px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.add-contact-sheet__photo-circle--filled {
+  background: #59606d;
+  color: #ffffff;
+}
+
+.add-contact-sheet__photo-circle ion-icon {
+  font-size: 28px;
+}
+
+.add-contact-sheet__photo-circle img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.add-contact-sheet__photo-link {
+  color: var(--ion-color-primary, #3880ff);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.add-contact-sheet__fields {
+  display: grid;
+  gap: 12px;
+}
+
+.add-contact-sheet__group {
+  background: transparent;
+}
+
+.add-contact-sheet__group-shell {
+  background: tokens.$color-surface;
+}
+
+.add-contact-sheet__fields ion-item {
+  --padding-start: #{$add-contact-inline-inset};
+  --padding-end: #{$add-contact-inline-inset};
+  --inner-padding-start: 0;
+  --inner-padding-end: 0;
+  --background: #{tokens.$color-surface};
+  --min-height: 52px;
+  --color: #{tokens.$color-ink};
+  --placeholder-color: #8b93a1;
+  --placeholder-opacity: 1;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.add-contact-sheet__fields ion-item::part(native) {
+  padding-left: $add-contact-inline-inset;
+  padding-right: $add-contact-inline-inset;
+}
+
+.add-contact-sheet__add-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 52px;
+  padding: $add-contact-row-block $add-contact-inline-inset;
+  border: 0;
+  border-bottom: 1px solid rgba(21, 24, 31, 0.08);
+  background: tokens.$color-surface;
+  color: tokens.$color-ink;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.2;
+  text-align: left;
+}
+
+.add-contact-sheet__add-row ion-icon {
+  color: tokens.$color-success;
+  font-size: 22px;
+  box-shadow: none;
+  outline: 0;
+  border: 0;
+}
+
+.add-contact-sheet__add-row,
+.add-contact-sheet__add-row:focus,
+.add-contact-sheet__add-row:focus-visible,
+.add-contact-sheet__add-row ion-icon,
+.add-contact-sheet__add-row ion-icon:focus,
+.add-contact-sheet__add-row ion-icon:focus-visible {
+  box-shadow: none;
+  outline: 0;
+}
+
+.add-contact-sheet__editable-group {
+  position: relative;
+  overflow: hidden;
+  animation: add-contact-sheet-row-enter 220ms ease;
+}
+
+.add-contact-sheet__notes-group {
+  display: block;
+}
+
+.add-contact-sheet__editable-content {
+  min-width: 0;
+  background: tokens.$color-surface;
+  padding: 0 $add-contact-row-block;
+  transition: transform 220ms ease;
+  border-bottom: 1px solid tokens.$color-line;
+}
+
+.add-contact-sheet__editable-group--delete .add-contact-sheet__editable-content {
+  transform: translateX(-$add-contact-delete-shift);
+}
+
+.add-contact-sheet__field-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 56px;
+  padding: 0;
+}
+
+.add-contact-sheet__field-main {
+  display: flex;
+  align-items: center;
+  flex: 1;
+  min-width: 0;
+}
+
+.add-contact-sheet__field-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 50%;
+  min-height: 44px;
+  padding: 8px 10px 8px 0;
+  border: 0;
+  background: transparent;
+  appearance: none;
+  cursor: pointer;
+}
+
+.add-contact-sheet__field-row--textarea {
+  align-items: flex-start;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.add-contact-sheet__notes-card {
+  flex: 1;
+  min-width: 0;
+  background: tokens.$color-surface;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.add-contact-sheet__notes-head {
+  padding: $add-contact-row-block 0 0;
+}
+
+.add-contact-sheet__notes-title {
+  display: block;
+  color: tokens.$color-muted;
+  font-size: 13px;
+}
+
+.add-contact-sheet__notes-body {
+  padding: 6px 0 $add-contact-row-block;
+}
+
+.add-contact-sheet__notes-textarea {
+  display: block;
+  min-height: 108px;
+  --padding-start: 0;
+  --padding-end: 0;
+  --padding-top: 0;
+  --padding-bottom: 0;
+  --background: transparent;
+  --placeholder-color: #8b93a1;
+  --placeholder-opacity: 1;
+  color: tokens.$color-ink;
+}
+
+.add-contact-sheet__minus,
+.add-contact-sheet__field-arrow {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.add-contact-sheet__minus {
+  flex: 0 0 auto;
+  color: #ff3b30;
+}
+
+.add-contact-sheet__minus ion-icon,
+.add-contact-sheet__field-arrow ion-icon {
+  font-size: 22px;
+}
+
+.add-contact-sheet__field-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  color: #6d7482;
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.add-contact-sheet__field-arrow {
+  flex: 0 0 auto;
+  color: #8b93a1;
+  width: 22px;
+  height: 22px;
+}
+
+.add-contact-sheet__field-meta:focus,
+.add-contact-sheet__field-meta:focus-visible {
+  outline: 0;
+  box-shadow: none;
+}
+
+.add-contact-sheet__field-info {
+  display: inline-grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #8b93a1;
+}
+
+.add-contact-sheet__field-info ion-icon {
+  font-size: 20px;
+}
+
+.add-contact-sheet__field-divider {
+  flex: 0 0 1px;
+  align-self: stretch;
+  margin: 0 10px;
+  background: rgba(21, 24, 31, 0.08);
+}
+
+.add-contact-sheet__field-input,
+.add-contact-sheet__field-textarea {
+  flex: 1;
+  min-width: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+  --background: transparent;
+  color: #15181f;
+  --placeholder-color: #8b93a1;
+  --placeholder-opacity: 1;
+}
+
+.add-contact-sheet__delete-action {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: $add-contact-delete-width;
+  border: 0;
+  background: #ff3b30;
+  color: #ffffff;
+  font-size: 16px;
+  transform: translateX(100%);
+  transition: transform 220ms ease;
+}
+
+.add-contact-sheet__editable-group--delete .add-contact-sheet__delete-action {
+  transform: translateX(0);
+}
+
+.add-contact-sheet__group > :last-child {
+  --inner-border-width: 0;
+  border-bottom: 0;
+}
+
+@keyframes add-contact-sheet-row-enter {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scaleY(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+
+.add-contact-sheet__label-content {
+  --background: #f3f4f6;
+}
+
+.add-contact-sheet__label-list,
+.add-contact-sheet__label-custom {
+  margin-top: 12px;
+  background: #ffffff;
+}
+
+.add-contact-sheet__label-row,
+.add-contact-sheet__custom-trigger {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  border: 0;
+  border-bottom: 1px solid rgba(21, 24, 31, 0.08);
+  background: #ffffff;
+  color: #15181f;
+  font-size: 16px;
+  text-align: left;
+}
+
+.add-contact-sheet__label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.add-contact-sheet__label-row--active {
+  color: #15181f;
+}
+
+.add-contact-sheet__label-row--active ion-icon {
+  font-size: 20px;
+  color: var(--ion-color-primary, #3880ff);
+}
+
+.add-contact-sheet__custom-editor {
+  background: #ffffff;
+}
+
+.add-contact-sheet__custom-editor-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --inner-padding-start: 0;
+  --inner-padding-end: 0;
+  --background: #ffffff;
+  --min-height: 52px;
+  margin: 0;
+  border-bottom: 0;
+}
+
+.add-contact-sheet__custom-editor-item::part(native) {
+  min-height: 52px;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.add-contact-sheet__custom-editor-item ion-input {
+  --padding-start: 0;
+  --padding-end: 0;
+  --background: transparent;
+}
+
+.add-contact-sheet__custom-labels {
+  background: #ffffff;
+}
+
+.add-contact-sheet__custom-label-item {
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --inner-padding-start: 0;
+  --inner-padding-end: 0;
+  --background: #ffffff;
+  --min-height: 52px;
+}
+
+.add-contact-sheet__custom-label-check {
+  color: var(--ion-color-primary, #3880ff);
+  font-size: 20px;
+}
+
+.add-contact-sheet__custom-trigger--row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.add-contact-sheet__contacts-content {
+  --background: #ffffff;
+}
+
+.add-contact-sheet__contacts-layout {
+  display: flex;
+  gap: 8px;
+  padding: $add-contact-block-inset 0 calc(28px + env(safe-area-inset-bottom, 0px));
+}
+
+.add-contact-sheet__contacts-list {
+  flex: 1;
+  min-width: 0;
+}

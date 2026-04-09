@@ -1,26 +1,23 @@
-import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 
 import { ContactCard } from '../../data/app-data.models';
 import { AvatarComponent } from '../avatar/avatar.component';
+import { ContactInitialsPipe } from './trash/contact-initials.pipe';
 
 @Component({
   selector: 'app-contact-list-row',
   standalone: true,
-  imports: [IonicModule, AvatarComponent],
+  imports: [IonicModule, AvatarComponent, ContactInitialsPipe],
   templateUrl: './contact-list-row.component.html',
   styleUrls: ['./contact-list-row.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContactListRowComponent {
-  @Input({ required: true }) contact!: ContactCard;
-  @Input() subtitle = '';
-  @Input() titleTone: 'default' | 'danger' = 'default';
-  @Input() selectionMode = false;
-  @Input() selected = false;
-  @Output() selectionToggle = new EventEmitter<void>();
-
-  get initials(): string {
-    return `${this.contact.lastName.slice(0, 1)}${this.contact.firstName.slice(0, 1)}`.toUpperCase();
-  }
+  readonly contact = input.required<ContactCard>();
+  readonly subtitle = input('');
+  readonly titleTone = input<'default' | 'danger'>('default');
+  readonly selectionMode = input(false);
+  readonly selected = input(false);
+  readonly selectionToggle = output<void>();
 }

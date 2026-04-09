@@ -1,0 +1,421 @@
+<ion-modal
+  [isOpen]="isOpen()"
+  [canDismiss]="canDismiss"
+  [initialBreakpoint]="0.98"
+  [breakpoints]="[0, 0.98]"
+  handle="false"
+  class="add-contact-sheet"
+  (didDismiss)="handleDidDismiss()"
+>
+  <ng-template>
+    <div class="ion-page add-contact-sheet__page">
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button fill="clear" (click)="requestClose()">Отмена</ion-button>
+          </ion-buttons>
+          <ion-title>Новый контакт</ion-title>
+          <ion-buttons slot="end">
+            <ion-button fill="clear" [disabled]="!hasAnyValue()" (click)="commit()">Готово</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content [fullscreen]="true" class="add-contact-sheet__content">
+        <div class="add-contact-sheet__body" (click)="closeDeleteReveal()">
+          <input #photoInput hidden type="file" (change)="handlePhotoSelected($event)">
+
+          <button class="add-contact-sheet__photo" type="button" (click)="openPhotoPicker()">
+            <span class="add-contact-sheet__photo-circle" [class.add-contact-sheet__photo-circle--filled]="!draft.photoUrl">
+              @if (draft.photoUrl) {
+                <img [src]="draft.photoUrl" alt="Фото контакта">
+              } @else {
+                <ion-icon name="person-outline"></ion-icon>
+              }
+            </span>
+            <span class="add-contact-sheet__photo-link">Добавить фото</span>
+          </button>
+
+          <div class="add-contact-sheet__fields">
+            <div class="add-contact-sheet__group">
+              <div class="add-contact-sheet__group-shell">
+                <ion-item lines="full">
+                  <ion-input placeholder="Фамилия" [(ngModel)]="draft.lastName"></ion-input>
+                </ion-item>
+                <ion-item lines="full">
+                  <ion-input placeholder="Имя" [(ngModel)]="draft.firstName"></ion-input>
+                </ion-item>
+                <ion-item lines="full">
+                  <ion-input placeholder="Компания" [(ngModel)]="draft.company"></ion-input>
+                </ion-item>
+              </div>
+            </div>
+
+            <div class="add-contact-sheet__group">
+              <div class="add-contact-sheet__group-shell">
+                @for (row of fieldRows('phone'); track $index) {
+                  <div class="add-contact-sheet__editable-group" [class.add-contact-sheet__editable-group--delete]="isDeleteRowOpen('phone', $index)">
+                    <div class="add-contact-sheet__editable-content">
+                      <div class="add-contact-sheet__field-row">
+                        <button class="add-contact-sheet__minus" type="button" (click)="handleDeleteToggle($event, 'phone', $index)">
+                          <ion-icon name="remove-circle"></ion-icon>
+                        </button>
+                        <div class="add-contact-sheet__field-main">
+                          <button class="add-contact-sheet__field-meta" type="button" (click)="openLabelModal('phone', $index)">
+                            <span class="add-contact-sheet__field-label">{{ rowLabel('phone', $index) }}</span>
+                            <span class="add-contact-sheet__field-arrow" aria-hidden="true">
+                              <ion-icon name="chevron-forward-outline"></ion-icon>
+                            </span>
+                          </button>
+                          <span class="add-contact-sheet__field-divider" aria-hidden="true"></span>
+                          <ion-input
+                            class="add-contact-sheet__field-input"
+                            [placeholder]="fieldPlaceholder('phone')"
+                            type="tel"
+                            [ngModel]="fieldValueAt('phone', $index)"
+                            (ngModelChange)="updateFieldValueAt('phone', $index, $event)"
+                          ></ion-input>
+                        </div>
+                      </div>
+                    </div>
+                    <button class="add-contact-sheet__delete-action" type="button" (click)="removeField('phone', $index)">Удалить</button>
+                  </div>
+                }
+                <button class="add-contact-sheet__add-row" type="button" (click)="addRow('phone')">
+                  <ion-icon name="add-circle"></ion-icon>
+                  <span>Добавить телефон</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="add-contact-sheet__group">
+              <div class="add-contact-sheet__group-shell">
+                @for (row of fieldRows('email'); track $index) {
+                  <div class="add-contact-sheet__editable-group" [class.add-contact-sheet__editable-group--delete]="isDeleteRowOpen('email', $index)">
+                    <div class="add-contact-sheet__editable-content">
+                      <div class="add-contact-sheet__field-row">
+                        <button class="add-contact-sheet__minus" type="button" (click)="handleDeleteToggle($event, 'email', $index)">
+                          <ion-icon name="remove-circle"></ion-icon>
+                        </button>
+                        <div class="add-contact-sheet__field-main">
+                          <button class="add-contact-sheet__field-meta" type="button" (click)="openLabelModal('email', $index)">
+                            <span class="add-contact-sheet__field-label">{{ rowLabel('email', $index) }}</span>
+                            <span class="add-contact-sheet__field-arrow" aria-hidden="true">
+                              <ion-icon name="chevron-forward-outline"></ion-icon>
+                            </span>
+                          </button>
+                          <span class="add-contact-sheet__field-divider" aria-hidden="true"></span>
+                          <ion-input
+                            class="add-contact-sheet__field-input"
+                            [placeholder]="fieldPlaceholder('email')"
+                            type="email"
+                            [ngModel]="fieldValueAt('email', $index)"
+                            (ngModelChange)="updateFieldValueAt('email', $index, $event)"
+                          ></ion-input>
+                        </div>
+                      </div>
+                    </div>
+                    <button class="add-contact-sheet__delete-action" type="button" (click)="removeField('email', $index)">Удалить</button>
+                  </div>
+                }
+                <button class="add-contact-sheet__add-row" type="button" (click)="addRow('email')">
+                  <ion-icon name="add-circle"></ion-icon>
+                  <span>Добавить email</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="add-contact-sheet__group">
+              <div class="add-contact-sheet__group-shell">
+                @for (row of fieldRows('url'); track $index) {
+                  <div class="add-contact-sheet__editable-group" [class.add-contact-sheet__editable-group--delete]="isDeleteRowOpen('url', $index)">
+                    <div class="add-contact-sheet__editable-content">
+                      <div class="add-contact-sheet__field-row">
+                        <button class="add-contact-sheet__minus" type="button" (click)="handleDeleteToggle($event, 'url', $index)">
+                          <ion-icon name="remove-circle"></ion-icon>
+                        </button>
+                        <div class="add-contact-sheet__field-main">
+                          <button class="add-contact-sheet__field-meta" type="button" (click)="openLabelModal('url', $index)">
+                            <span class="add-contact-sheet__field-label">{{ rowLabel('url', $index) }}</span>
+                            <span class="add-contact-sheet__field-arrow" aria-hidden="true">
+                              <ion-icon name="chevron-forward-outline"></ion-icon>
+                            </span>
+                          </button>
+                          <span class="add-contact-sheet__field-divider" aria-hidden="true"></span>
+                          <ion-input
+                            class="add-contact-sheet__field-input"
+                            [placeholder]="fieldPlaceholder('url')"
+                            [ngModel]="fieldValueAt('url', $index)"
+                            (ngModelChange)="updateFieldValueAt('url', $index, $event)"
+                          ></ion-input>
+                        </div>
+                      </div>
+                    </div>
+                    <button class="add-contact-sheet__delete-action" type="button" (click)="removeField('url', $index)">Удалить</button>
+                  </div>
+                }
+                <button class="add-contact-sheet__add-row" type="button" (click)="addRow('url')">
+                  <ion-icon name="add-circle"></ion-icon>
+                  <span>Добавить URL</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="add-contact-sheet__group">
+              <div class="add-contact-sheet__group-shell">
+                @for (row of fieldRows('customDate'); track $index) {
+                  <div class="add-contact-sheet__editable-group" [class.add-contact-sheet__editable-group--delete]="isDeleteRowOpen('customDate', $index)">
+                    <div class="add-contact-sheet__editable-content">
+                      <div class="add-contact-sheet__field-row">
+                        <button class="add-contact-sheet__minus" type="button" (click)="handleDeleteToggle($event, 'customDate', $index)">
+                          <ion-icon name="remove-circle"></ion-icon>
+                        </button>
+                        <div class="add-contact-sheet__field-main">
+                          <button class="add-contact-sheet__field-meta" type="button" (click)="openLabelModal('customDate', $index)">
+                            <span class="add-contact-sheet__field-label">{{ rowLabel('customDate', $index) }}</span>
+                            <span class="add-contact-sheet__field-arrow" aria-hidden="true">
+                              <ion-icon name="chevron-forward-outline"></ion-icon>
+                            </span>
+                          </button>
+                          <span class="add-contact-sheet__field-divider" aria-hidden="true"></span>
+                          <ion-input
+                            class="add-contact-sheet__field-input"
+                            [placeholder]="fieldPlaceholder('customDate')"
+                            type="date"
+                            [ngModel]="fieldValueAt('customDate', $index)"
+                            (ngModelChange)="updateFieldValueAt('customDate', $index, $event)"
+                          ></ion-input>
+                        </div>
+                      </div>
+                    </div>
+                    <button class="add-contact-sheet__delete-action" type="button" (click)="removeField('customDate', $index)">Удалить</button>
+                  </div>
+                }
+                <button class="add-contact-sheet__add-row" type="button" (click)="addRow('customDate')">
+                  <ion-icon name="add-circle"></ion-icon>
+                  <span>Добавить дату</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="add-contact-sheet__group">
+              <div class="add-contact-sheet__group-shell">
+                @for (row of fieldRows('closePerson'); track $index) {
+                  <div class="add-contact-sheet__editable-group" [class.add-contact-sheet__editable-group--delete]="isDeleteRowOpen('closePerson', $index)">
+                    <div class="add-contact-sheet__editable-content">
+                      <div class="add-contact-sheet__field-row">
+                        <button class="add-contact-sheet__minus" type="button" (click)="handleDeleteToggle($event, 'closePerson', $index)">
+                          <ion-icon name="remove-circle"></ion-icon>
+                        </button>
+                        <div class="add-contact-sheet__field-main">
+                          <button class="add-contact-sheet__field-meta" type="button" (click)="openLabelModal('closePerson', $index)">
+                            <span class="add-contact-sheet__field-label">{{ rowLabel('closePerson', $index) }}</span>
+                            <span class="add-contact-sheet__field-arrow" aria-hidden="true">
+                              <ion-icon name="chevron-forward-outline"></ion-icon>
+                            </span>
+                          </button>
+                          <span class="add-contact-sheet__field-divider" aria-hidden="true"></span>
+                          <ion-input
+                            class="add-contact-sheet__field-input"
+                            placeholder="Контакт"
+                            [ngModel]="fieldValueAt('closePerson', $index)"
+                            (ngModelChange)="updateFieldValueAt('closePerson', $index, $event)"
+                          ></ion-input>
+                          <button class="add-contact-sheet__field-info" type="button" (click)="openContactPicker($index)">
+                            <ion-icon name="information-circle-outline"></ion-icon>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                    <button class="add-contact-sheet__delete-action" type="button" (click)="removeField('closePerson', $index)">Удалить</button>
+                  </div>
+                }
+                <button class="add-contact-sheet__add-row" type="button" (click)="addRow('closePerson')">
+                  <ion-icon name="add-circle"></ion-icon>
+                  <span>Добавить близкого</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="add-contact-sheet__group">
+              <div class="add-contact-sheet__group-shell">
+                <div class="add-contact-sheet__notes-group">
+                  <div class="add-contact-sheet__editable-content">
+                    <div class="add-contact-sheet__notes-card">
+                      <div class="add-contact-sheet__notes-head">
+                        <span class="add-contact-sheet__notes-title">Заметка</span>
+                      </div>
+                      <div class="add-contact-sheet__notes-body">
+                        <ion-textarea
+                          class="add-contact-sheet__notes-textarea"
+                          placeholder="Введите текст"
+                          autoGrow="true"
+                          [(ngModel)]="draft.notes"
+                        ></ion-textarea>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </ion-content>
+    </div>
+  </ng-template>
+</ion-modal>
+
+<ion-action-sheet
+  [isOpen]="discardSheetOpen"
+  header="Вы действительно хотите отменить изменения?"
+  [buttons]="discardButtons"
+  (didDismiss)="closeDiscardSheet()"
+></ion-action-sheet>
+
+<ion-action-sheet
+  [isOpen]="photoPickerOpen"
+  header="Добавить фото"
+  [buttons]="photoButtons"
+  (didDismiss)="closePhotoPicker()"
+></ion-action-sheet>
+
+<ion-modal [isOpen]="labelModalOpen" class="add-contact-sheet__label-modal" (didDismiss)="closeLabelModal()">
+  <ng-template>
+    <div class="ion-page">
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button fill="clear" (click)="closeLabelModal()">Отмена</ion-button>
+          </ion-buttons>
+          <ion-title>Этикетка</ion-title>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="add-contact-sheet__label-content">
+        @if (labelModalPage === 'root') {
+          <div class="add-contact-sheet__label-list">
+            @for (label of labelOptions(activeLabelField); track label) {
+              <button class="add-contact-sheet__label-row" [class.add-contact-sheet__label-row--active]="isActiveLabel(label)" type="button" (click)="applyLabel(label)">
+                <span>{{ label }}</span>
+                @if (isActiveLabel(label)) {
+                  <ion-icon name="checkmark" aria-hidden="true"></ion-icon>
+                }
+              </button>
+            }
+          </div>
+
+          @if (activeLabelField === 'closePerson') {
+            <div class="add-contact-sheet__label-custom">
+              <button class="add-contact-sheet__custom-trigger add-contact-sheet__custom-trigger--row" type="button" (click)="openAllLabels()">
+                <span>Все этикетки</span>
+                <ion-icon name="chevron-forward-outline"></ion-icon>
+              </button>
+            </div>
+          } @else {
+            <div class="add-contact-sheet__label-custom">
+              @if (!customLabelInputOpen) {
+                <button class="add-contact-sheet__custom-trigger" type="button" (click)="enableCustomLabel()">Добавить собственную этикетку</button>
+              } @else {
+                <div class="add-contact-sheet__custom-editor">
+                  <ion-item lines="none" class="add-contact-sheet__custom-editor-item">
+                    <ion-input #customLabelInput placeholder="Своя этикетка" [(ngModel)]="customLabelDraft" (ionBlur)="handleCustomLabelBlur()" (keyup.enter)="saveCustomLabel()"></ion-input>
+                  </ion-item>
+                </div>
+              }
+
+              @if (customLabels(activeLabelField).length) {
+                <div class="add-contact-sheet__custom-labels">
+                  @for (label of customLabels(activeLabelField); track label) {
+                    <ion-item-sliding #slidingItem>
+                      <ion-item button detail="false" lines="full" class="add-contact-sheet__custom-label-item" (click)="applyLabel(label)">
+                        <ion-label>{{ label }}</ion-label>
+                        @if (isActiveLabel(label)) {
+                          <ion-icon slot="end" name="checkmark" class="add-contact-sheet__custom-label-check" aria-hidden="true"></ion-icon>
+                        }
+                      </ion-item>
+                      <ion-item-options side="start">
+                        <ion-item-option color="danger" expandable (click)="removeCustomLabel(activeLabelField!, label, slidingItem)">
+                          Удалить
+                        </ion-item-option>
+                      </ion-item-options>
+                    </ion-item-sliding>
+                  }
+                </div>
+              }
+            </div>
+          }
+        } @else {
+          <ion-header collapse="condense">
+            <ion-toolbar>
+              <ion-buttons slot="start">
+                <ion-button fill="clear" (click)="goBackToLabelRoot()">
+                  <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
+                </ion-button>
+              </ion-buttons>
+              <ion-title size="large">Все этикетки</ion-title>
+            </ion-toolbar>
+          </ion-header>
+          <div class="add-contact-sheet__label-list">
+            @for (label of allClosePersonLabels(); track label) {
+              <button class="add-contact-sheet__label-row" [class.add-contact-sheet__label-row--active]="isActiveLabel(label)" type="button" (click)="applyLabel(label)">
+                <span>{{ label }}</span>
+                @if (isActiveLabel(label)) {
+                  <ion-icon name="checkmark" aria-hidden="true"></ion-icon>
+                }
+              </button>
+            }
+          </div>
+        }
+      </ion-content>
+    </div>
+  </ng-template>
+</ion-modal>
+
+<ion-modal [isOpen]="contactPickerOpen" class="add-contact-sheet__contacts-modal" (didDismiss)="closeContactPicker()">
+  <ng-template>
+    <div class="ion-page">
+      <ion-header>
+        <ion-toolbar>
+          <ion-buttons slot="start">
+            <ion-button fill="clear" (click)="closeContactPicker()">
+              <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+          <ion-title>Контакты</ion-title>
+          <ion-buttons slot="end">
+            <ion-button fill="clear" (click)="closeContactPicker()">Отмена</ion-button>
+          </ion-buttons>
+        </ion-toolbar>
+      </ion-header>
+
+      <ion-content class="add-contact-sheet__contacts-content">
+        <div class="add-contact-sheet__contacts-layout">
+          <div class="add-contact-sheet__contacts-list">
+            @for (section of pickerGroupedContacts(); track section.letter) {
+              <ion-item-group [attr.id]="'picker-letter-' + section.letter">
+                <div class="extended-section-header">
+                  <ion-label class="extended-section-letter">{{ section.letter === pickerFavoritesTitle ? 'Favorites' : section.letter }}</ion-label>
+                  @if (section.letter !== pickerFavoritesTitle) {
+                    <ion-item-divider class="extended-section-divider"></ion-item-divider>
+                  }
+                </div>
+
+                @for (contact of section.contacts; track contact.id) {
+                  <ion-item button detail="false" class="simple-list-item" (click)="selectCloseContact(contact.id)">
+                    <ion-label>{{ contact.fullName }}</ion-label>
+                  </ion-item>
+                }
+              </ion-item-group>
+            }
+          </div>
+
+          <aside class="alphabet-rail">
+            @for (letter of pickerAlphabet(); track letter) {
+              <button class="alphabet-button" (click)="jumpToPickerLetter(letter)">{{ letter }}</button>
+            }
+          </aside>
+        </div>
+      </ion-content>
+    </div>
+  </ng-template>
+</ion-modal>

@@ -1,3 +1,5 @@
+@use '../../shared/tokens' as tokens;
+
 :host {
   display: block;
 }
@@ -36,7 +38,7 @@
 }
 
 .add-contact-inline::part(icon) {
-  color: var(--ink);
+  color: tokens.$color-ink;
   font-size: 20px;
   opacity: 1;
 }
@@ -92,7 +94,7 @@
   padding: 0;
   border: 0;
   background: transparent;
-  color: var(--ink);
+  color: tokens.$color-ink;
   text-decoration: none;
 }
 
@@ -116,14 +118,14 @@
 .dial-match small,
 .dial-more,
 .dial-directory-link {
-  color: var(--muted);
+  color: tokens.$color-muted;
   font-size: 13px;
 }
 
 .dial-suggestion-icon {
   flex: 0 0 auto;
   font-size: 20px;
-  color: var(--muted);
+  color: tokens.$color-muted;
 }
 
 .dial-more {
@@ -137,7 +139,7 @@
   width: 100%;
   height: 1px;
   margin: 4px 0 6px;
-  background: var(--line, rgba(21, 24, 31, 0.12));
+  background: tokens.$color-line;
 }
 
 .dial-grid {
@@ -169,7 +171,7 @@
 .dial-key span {
   font-size: 11px;
   letter-spacing: 0.12em;
-  color: var(--muted);
+  color: tokens.$color-muted;
 }
 
 .dial-grid-spacer {
@@ -204,7 +206,7 @@
   padding: 0;
   border-radius: 50%;
   background: rgba(21, 24, 31, 0.08);
-  color: var(--ink);
+  color: tokens.$color-ink;
 }
 
 .erase-button ion-icon {
@@ -220,8 +222,8 @@
   --background: #eef0f3;
   --box-shadow: none;
   --border-radius: 12px;
-  --color: var(--ink);
-  --placeholder-color: var(--muted);
+  --color: #{tokens.$color-ink};
+  --placeholder-color: #{tokens.$color-muted};
   padding-inline-start: 0;
   padding-inline-end: 8px;
 }
@@ -252,11 +254,11 @@
 }
 
 .keypad-match-name {
-  color: var(--ink);
+  color: tokens.$color-ink;
 }
 
 .keypad-match-text small {
-  color: var(--muted);
+  color: tokens.$color-muted;
   font-size: 13px;
 }
 

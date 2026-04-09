@@ -9,3 +9,10 @@
     <app-keypad-view></app-keypad-view>
   </app-page-inset>
 </ion-content>
+
+<app-add-contact-sheet
+  [isOpen]="store.addContactModalOpen"
+  [prefillPhone]="store.addContactPrefillPhone"
+  (closed)="store.closeAddContactModal()"
+  (saved)="saveContactDraft($event)"
+></app-add-contact-sheet>

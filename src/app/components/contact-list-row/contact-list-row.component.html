@@ -1,20 +1,20 @@
-@if (selectionMode) {
+@if (selectionMode()) {
   <ion-checkbox
     class="contact-list-row__selector"
-    [checked]="selected"
+    [checked]="selected()"
     (click)="$event.stopPropagation()"
     (ionChange)="selectionToggle.emit()"
     aria-label="Выбрать контакт"
   ></ion-checkbox>
 } @else {
-  <app-avatar [initials]="initials"></app-avatar>
+  <app-avatar [initials]="contact() | contactInitials"></app-avatar>
 }
 <span class="contact-list-row__body">
-  <span class="contact-list-row__title" [class.contact-list-row__title--danger]="titleTone === 'danger'">
-    {{ contact.fullName }}
+  <span class="contact-list-row__title" [class.contact-list-row__title--danger]="titleTone() === 'danger'">
+    {{ contact().fullName }}
   </span>
-  @if (subtitle) {
-    <span class="contact-list-row__subtitle">{{ subtitle }}</span>
+  @if (subtitle()) {
+    <span class="contact-list-row__subtitle">{{ subtitle() }}</span>
   }
   <span class="contact-list-row__subtitle">
     <ng-content select="[contact-row-subtitle]"></ng-content>

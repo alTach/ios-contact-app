@@ -2,7 +2,7 @@ import { DestroyRef, Injectable, inject } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AppDataRepository } from '../data/app-data.repository';
-import { ContactCard, DirectoryEntry } from '../data/app-data.models';
+import { AddContactDraft, ContactCard, DirectoryEntry } from '../data/app-data.models';
 
 export type ContactsTabKey = 'favorites' | 'recent' | 'contacts';
 export type FilterKey = 'all' | 'incoming' | 'outgoing' | 'missed' | 'unknown' | 'long';
@@ -45,6 +45,8 @@ export class ContactsWorkspaceStore {
   searchTerm = '';
   selectionMode = false;
   viewMode: ViewMode = 'simple';
+  addContactModalOpen = false;
+  addContactPrefillPhone = '';
   directorySearch = '';
   dialNumber = '';
   activeCallSource = 'SIM 1';
@@ -196,6 +198,19 @@ export class ContactsWorkspaceStore {
 
   contactById(contactId: number): ContactCard | null {
     return this.contacts.find((contact) => contact.id === contactId) ?? null;
+  }
+
+  addTagToContact(contactId: number, tag = 'Новая метка'): void {
+    this.contacts = this.contacts.map((contact) => {
+      if (contact.id !== contactId || contact.tags.includes(tag)) {
+        return contact;
+      }
+
+      return {
+        ...contact,
+        tags: [...contact.tags, tag]
+      };
+    });
   }
 
   openContact(contact: ContactCard): void {
@@ -412,11 +427,70 @@ export class ContactsWorkspaceStore {
     return `${contact.lastName.slice(0, 1)}${contact.firstName.slice(0, 1)}`.toUpperCase();
   }
 
-  addContact(): void {
-    this.addContactPressed = true;
-    setTimeout(() => {
-      this.addContactPressed = false;
-    }, 1400);
+  openAddContactModal(prefillPhone = ''): void {
+    this.addContactPrefillPhone = prefillPhone;
+    this.addContactModalOpen = true;
+  }
+
+  closeAddContactModal(): void {
+    this.addContactModalOpen = false;
+    this.addContactPrefillPhone = '';
+  }
+
+  saveNewContact(draft: AddContactDraft): ContactCard {
+    const trimmedLastName = draft.lastName.trim();
+    const trimmedFirstName = draft.firstName.trim();
+    const fallbackName = draft.company.trim() || 'Новый контакт';
+    const lastName = trimmedLastName || fallbackName;
+    const firstName = trimmedFirstName || 'Без имени';
+    const fullName = `${lastName} ${firstName}`.trim();
+    const id = Math.max(0, ...this.contacts.map((contact) => contact.id)) + 1;
+    const noteParts = [
+      draft.notes.trim(),
+      draft.customDate ? `Дата: ${draft.customDate}` : '',
+      draft.closePerson ? `Близкий: ${draft.closePerson}` : '',
+      draft.address.street ? `Адрес: ${[draft.address.street, draft.address.city, draft.address.region, draft.address.country, draft.address.postalCode].filter(Boolean).join(', ')}` : ''
+    ].filter(Boolean);
+
+    const nextContact: ContactCard = {
+      id,
+      firstName,
+      lastName,
+      middleName: '',
+      fullName,
+      age: 28,
+      group: this.activeGroup === 'Все' ? 'Без группы' : this.activeGroup,
+      tags: ['Новый'],
+      organization: draft.company.trim(),
+      occupation: '',
+      online: false,
+      callType: 'incoming',
+      duration: '00:00',
+      city: draft.address.city.trim(),
+      note: noteParts.join('\n'),
+      socials: {
+        instagram: '',
+        twitter: '',
+        vk: '',
+        appleMusic: '',
+        youtube: '',
+        tiktok: ''
+      },
+      phones: draft.phones.map((item) => item.trim()).filter(Boolean),
+      emails: draft.emails.map((item) => item.trim()).filter(Boolean),
+      urls: draft.urls.map((item) => item.trim()).filter(Boolean),
+      address: { ...draft.address },
+      customDate: draft.customDate,
+      closePerson: draft.closePerson.trim(),
+      photoUrl: draft.photoUrl.trim() || null,
+      sourceListId: this.activeContactListId
+    };
+
+    this.contacts = [...this.contacts, nextContact].sort((left, right) => left.lastName.localeCompare(right.lastName, 'ru'));
+    this.groups = ['Все', ...new Set(this.contacts.map((contact) => contact.group))];
+    this.alphabet = [...new Set(this.contacts.map((contact) => this.getLetter(contact)))];
+    this.closeAddContactModal();
+    return nextContact;
   }
 
   removeDigit(): void {
@@ -498,6 +572,11 @@ export class ContactsWorkspaceStore {
   }
 
   private contactPhoneDigits(contact: ContactCard): string {
+    const directPhone = contact.phones?.[0]?.replace(/\D/g, '');
+    if (directPhone) {
+      return directPhone;
+    }
+
     const suffix = `${(1000000000 + contact.id).toString().slice(-9)}`;
     return `79${suffix}`;
   }
@@ -518,6 +597,10 @@ export class ContactsWorkspaceStore {
   }
 
   private contactListIdForContact(contact: ContactCard): string {
+    if (contact.sourceListId) {
+      return contact.sourceListId;
+    }
+
     const googleLists = this.contactLists.filter((list) => list.source === 'Google');
     const phoneLists = this.contactLists.filter((list) => list.source === 'Телефон');
     const icloudLists = this.contactLists.filter((list) => list.source === 'iCloud');

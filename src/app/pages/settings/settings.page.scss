@@ -1,21 +1,12 @@
-:host {
-  --ink: #15181f;
-  --muted: #6d7482;
-  --surface: #ffffff;
-  --surface-strong: #ffffff;
-  --surface-soft: #ffffff;
-  --line: rgba(21, 24, 31, 0.08);
-  --accent: #111111;
-  --shadow: none;
-}
+@use '../../shared/tokens' as tokens;
 
 ion-content.settings-shell {
-  --background: #ffffff;
+  --background: #{tokens.$color-surface};
 }
 
 .settings-layout {
   padding: 20px 16px 32px;
-  color: var(--ink);
+  color: tokens.$color-ink;
 }
 
 ion-toolbar {
@@ -26,7 +17,7 @@ ion-toolbar {
 .topbar-card,
 .settings-card,
 .settings-item {
-  background: var(--surface);
+  background: tokens.$color-surface;
   border: 0;
   box-shadow: none;
 }
@@ -47,7 +38,7 @@ h3 {
 
 .subtle,
 .settings-item p {
-  color: var(--muted);
+  color: tokens.$color-muted;
 }
 
 .eyebrow {
@@ -56,7 +47,7 @@ h3 {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--accent);
+  color: tokens.$color-accent;
 }
 
 .settings-section + .settings-section {
@@ -75,7 +66,7 @@ h3 {
   gap: 12px;
   border-radius: 0;
   padding: 16px 0;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid tokens.$color-line;
 }
 
 .chip-row {
@@ -89,7 +80,7 @@ h3 {
   border-radius: 999px;
   padding: 10px 14px;
   background: transparent;
-  border: 1px solid var(--line);
+  border: 1px solid tokens.$color-line;
 }
 
 @media (max-width: 720px) {

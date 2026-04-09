@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild, inject, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
@@ -15,16 +15,15 @@ import { ContactsTabKey, ContactsWorkspaceStore, ViewMode } from '../../state/co
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ContactsTabViewComponent implements AfterViewInit {
-  @Input({ required: true }) tab!: ContactsTabKey;
-  @Input() viewMode: ViewMode = 'simple';
-  @Input() selectionMode = false;
-  @Input() selectionVersion = 0;
+  readonly tab = input.required<ContactsTabKey>();
+  readonly viewMode = input<ViewMode>('simple');
+  readonly selectionMode = input(false);
+  readonly selectionVersion = input(0);
   @ViewChild('searchInput') searchInput?: ElementRef<{ setFocus: () => Promise<void> }>;
 
-  constructor(
-    public readonly store: ContactsWorkspaceStore,
-    private readonly router: Router
-  ) {}
+  readonly store = inject(ContactsWorkspaceStore);
+
+  private readonly router = inject(Router);
 
   ngAfterViewInit(): void {
     if (this.store.searchOpen) {
@@ -33,7 +32,7 @@ export class ContactsTabViewComponent implements AfterViewInit {
   }
 
   get title(): string {
-    switch (this.tab) {
+    switch (this.tab()) {
       case 'favorites':
         return 'Избранное';
       case 'recent':
@@ -44,20 +43,20 @@ export class ContactsTabViewComponent implements AfterViewInit {
   }
 
   get subtitle(): string {
-    return `${this.store.visibleContacts(this.tab).length} из ${this.store.contacts.length} контактов`;
+    return `${this.store.visibleContacts(this.tab()).length} из ${this.store.contacts.length} контактов`;
   }
 
   get bottomCountLabel(): string {
-    const count = this.store.listContacts(this.tab).length;
+    const count = this.store.listContacts(this.tab()).length;
     return `${count} контактов`;
   }
 
   get isContactsTab(): boolean {
-    return this.tab === 'contacts';
+    return this.tab() === 'contacts';
   }
 
   handleContactPress(contactId: number): void {
-    if (this.selectionMode) {
+    if (this.selectionMode()) {
       this.store.toggleSelection(contactId);
       return;
     }

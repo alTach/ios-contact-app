@@ -1,10 +1,18 @@
+@use '../../shared/tokens' as tokens;
+
+$contacts-menu-surface: rgba(255, 255, 255, 0.64);
+$contacts-menu-surface-active: rgba(255, 255, 255, 0.88);
+$contacts-menu-border: rgba(21, 24, 31, 0.08);
+$contacts-menu-border-active: rgba(21, 24, 31, 0.18);
+$contacts-menu-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
+
 ion-toolbar {
-  --background: #ffffff;
-  --border-color: rgba(21, 24, 31, 0.08);
+  --background: #{tokens.$color-surface};
+  --border-color: #{tokens.$color-line};
 }
 
 ion-button {
-  --color: #15181f;
+  --color: #{tokens.$color-ink};
 }
 
 .contacts-header-actions {
@@ -66,7 +74,7 @@ ion-button {
   appearance: none;
   border: 0;
   background: transparent;
-  color: #15181f;
+  color: tokens.$color-ink;
 }
 
 .selection-toolbar__checkbox,
@@ -145,11 +153,6 @@ ion-popover::part(content) {
 }
 
 .contacts-menu {
-  --mode-surface: rgba(255, 255, 255, 0.64);
-  --mode-surface-active: rgba(255, 255, 255, 0.88);
-  --mode-border: rgba(21, 24, 31, 0.08);
-  --mode-border-active: rgba(21, 24, 31, 0.18);
-  --mode-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.45);
   position: relative;
   padding: 14px;
   background: transparent;
@@ -189,7 +192,7 @@ ion-popover::part(content) {
   margin: 0 0 12px;
   font-size: 12px;
   font-weight: 700;
-  color: #6d7482;
+  color: tokens.$color-muted;
   text-transform: uppercase;
   letter-spacing: 0.08em;
 }
@@ -219,12 +222,12 @@ ion-popover::part(content) {
   gap: 6px;
   min-height: 84px;
   padding: 12px;
-  border: 1px solid var(--mode-border);
+  border: 1px solid $contacts-menu-border;
   border-radius: 14px;
-  background: var(--mode-surface);
+  background: $contacts-menu-surface;
   backdrop-filter: blur(18px) saturate(135%);
   -webkit-backdrop-filter: blur(18px) saturate(135%);
-  box-shadow: var(--mode-shadow);
+  box-shadow: $contacts-menu-shadow;
 }
 
 .mode-preview__frame--simple span {
@@ -293,7 +296,7 @@ ion-popover::part(content) {
 
 .mode-preview__meta span {
   display: block;
-  color: #15181f;
+  color: tokens.$color-ink;
   font-size: 13px;
   font-weight: 500;
   line-height: 1.2;
@@ -310,7 +313,7 @@ ion-popover::part(content) {
 }
 
 .mode-preview__radio.active {
-  border-color: #15181f;
+  border-color: tokens.$color-ink;
 }
 
 .mode-preview__radio.active::after {
@@ -318,12 +321,12 @@ ion-popover::part(content) {
   position: absolute;
   inset: 3px;
   border-radius: 50%;
-  background: #15181f;
+  background: tokens.$color-ink;
 }
 
 .mode-preview.active .mode-preview__frame {
-  border-color: var(--mode-border-active);
-  background: var(--mode-surface-active);
+  border-color: $contacts-menu-border-active;
+  background: $contacts-menu-surface-active;
 }
 
 .contacts-menu__divider {
@@ -339,7 +342,7 @@ ion-popover::part(content) {
   gap: 12px;
   min-height: 40px;
   width: 100%;
-  color: #15181f;
+  color: tokens.$color-ink;
   font-size: 15px;
   line-height: 1.2;
   text-decoration: none;
