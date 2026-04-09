@@ -1,22 +1,22 @@
 <ion-tabs>
   <ion-tab-bar slot="bottom" class="bottom-bar">
-    <ion-tab-button tab="favorites" href="/tabs/favorites">
+    <ion-tab-button tab="favorites" [routerLink]="['/tabs/favorites']" [class.tab-selected]="isTabActive('/tabs/favorites')">
       <ion-icon name="star-outline"></ion-icon>
       <ion-label>Избранное</ion-label>
     </ion-tab-button>
-    <ion-tab-button tab="recent" href="/tabs/recent">
+    <ion-tab-button tab="recent" [routerLink]="['/tabs/recent']" [class.tab-selected]="isTabActive('/tabs/recent')">
       <ion-icon name="time-outline"></ion-icon>
       <ion-label>Недавние</ion-label>
     </ion-tab-button>
-    <ion-tab-button tab="contacts" href="/tabs/contact/list">
+    <ion-tab-button tab="contacts" [routerLink]="['/tabs/contact/list']" [class.tab-selected]="isTabActive('/tabs/contact')">
       <ion-icon name="people-outline"></ion-icon>
       <ion-label>Контакты</ion-label>
     </ion-tab-button>
-    <ion-tab-button tab="directory" href="/tabs/directory">
+    <ion-tab-button tab="directory" [routerLink]="['/tabs/directory']" [class.tab-selected]="isTabActive('/tabs/directory')">
       <ion-icon name="book-outline"></ion-icon>
       <ion-label>Справочник</ion-label>
     </ion-tab-button>
-    <ion-tab-button tab="keypad" href="/tabs/keypad">
+    <ion-tab-button tab="keypad" [routerLink]="['/tabs/keypad']" [class.tab-selected]="isTabActive('/tabs/keypad')">
       <ion-icon name="keypad-outline"></ion-icon>
       <ion-label>Клавиатура</ion-label>
     </ion-tab-button>
