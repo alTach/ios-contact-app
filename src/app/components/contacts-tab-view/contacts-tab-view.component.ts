@@ -1,6 +1,6 @@
 import { AfterViewInit, ChangeDetectionStrategy, Component, ElementRef, ViewChild, inject, input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { IonicModule } from '@ionic/angular';
 
 import { ContactListRowComponent } from '../contact-list-row/contact-list-row.component';
@@ -9,7 +9,7 @@ import { ContactsTabKey, ContactsWorkspaceStore, ViewMode } from '../../state/co
 @Component({
   selector: 'app-contacts-tab-view',
   standalone: true,
-  imports: [FormsModule, IonicModule, ContactListRowComponent],
+  imports: [FormsModule, IonicModule, RouterLink, ContactListRowComponent],
   templateUrl: './contacts-tab-view.component.html',
   styleUrls: ['./contacts-tab-view.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -19,6 +19,7 @@ export class ContactsTabViewComponent implements AfterViewInit {
   readonly viewMode = input<ViewMode>('simple');
   readonly selectionMode = input(false);
   readonly selectionVersion = input(0);
+  readonly showToolbar = input(true);
   @ViewChild('searchInput') searchInput?: ElementRef<{ setFocus: () => Promise<void> }>;
 
   readonly store = inject(ContactsWorkspaceStore);
@@ -53,6 +54,10 @@ export class ContactsTabViewComponent implements AfterViewInit {
 
   get isContactsTab(): boolean {
     return this.tab() === 'contacts';
+  }
+
+  get favoritePreviewContacts() {
+    return this.store.favoritePreviewContacts();
   }
 
   handleContactPress(contactId: number): void {

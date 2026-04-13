@@ -41,3 +41,69 @@ ion-toolbar {
   color: tokens.$color-muted;
   font-size: 13px;
 }
+
+.favorites-strip {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: minmax(60px, 1fr);
+  gap: 10px;
+  margin: 0 0 16px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.favorites-strip__item {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  min-width: 60px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: tokens.$color-ink;
+  text-decoration: none;
+}
+
+.favorites-strip__avatar {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #d9dde4;
+  color: tokens.$color-ink;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.favorites-strip__avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.favorites-strip__avatar--more {
+  background: #eceff4;
+}
+
+.favorites-strip__avatar--more ion-icon {
+  font-size: 18px;
+}
+
+.favorites-strip__last-name,
+.favorites-strip__first-name {
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  color: tokens.$color-ink;
+  font-size: 11px;
+  line-height: 1.2;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.favorites-strip__first-name {
+  color: tokens.$color-muted;
+}

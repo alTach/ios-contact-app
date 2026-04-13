@@ -1,4 +1,4 @@
-@if (!isContactsTab || tab() === 'recent') {
+@if (showToolbar() && (!isContactsTab || tab() === 'recent')) {
   <section class="toolbar-card">
     @if (!isContactsTab) {
       <div class="search-wrap" [class.open]="store.searchOpen">
@@ -29,11 +29,11 @@
 }
 
 <section class="list-card">
-  @if (store.addContactPressed) {
+  @if (isContactsTab && store.addContactPressed) {
     <div class="inline-feedback">Новая карточка контакта может открыться здесь или через отдельную форму создания.</div>
   }
 
-  @if (store.activePortalCard(); as card) {
+  @if (isContactsTab && store.activePortalCard(); as card) {
     <article class="portal-card">
       <div class="portal-card__header">
         <h3>{{ card.title }}</h3>
@@ -53,6 +53,32 @@
         </button>
       </div>
     </article>
+  }
+
+  @if (isContactsTab) {
+    <section class="favorites-strip">
+      @for (contact of favoritePreviewContacts; track contact.id) {
+        <button class="favorites-strip__item" type="button" (click)="handleContactPress(contact.id)">
+          <span class="favorites-strip__avatar">
+            @if (contact.photoUrl) {
+              <img [src]="contact.photoUrl" [alt]="contact.fullName">
+            } @else {
+              {{ contact.lastName.slice(0, 1) }}{{ contact.firstName.slice(0, 1) }}
+            }
+          </span>
+          <span class="favorites-strip__last-name">{{ contact.lastName }}</span>
+          <span class="favorites-strip__first-name">{{ contact.firstName }}</span>
+        </button>
+      }
+
+      <a class="favorites-strip__item favorites-strip__item--more" routerLink="/favorites">
+        <span class="favorites-strip__avatar favorites-strip__avatar--more">
+          <ion-icon name="ellipsis-horizontal"></ion-icon>
+        </span>
+        <span class="favorites-strip__last-name">Ещё</span>
+        <span class="favorites-strip__first-name"> </span>
+      </a>
+    </section>
   }
 
   <div class="list-layout">

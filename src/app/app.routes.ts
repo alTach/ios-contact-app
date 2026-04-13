@@ -24,10 +24,6 @@ export const appRoutes: Routes = [
         loadComponent: () => import('./pages/contacts/contacts.page').then((module) => module.ContactsPage)
       },
       {
-        path: 'favorites',
-        loadComponent: () => import('./pages/favorites/favorites.page').then((module) => module.FavoritesPage)
-      },
-      {
         path: 'recent',
         loadComponent: () => import('./pages/recent/recent.page').then((module) => module.RecentPage)
       },
@@ -40,6 +36,10 @@ export const appRoutes: Routes = [
         loadComponent: () => import('./pages/keypad/keypad.page').then((module) => module.KeypadPage)
       }
     ]
+  },
+  {
+    path: 'favorites',
+    loadComponent: () => import('./pages/favorites/favorites.page').then((module) => module.FavoritesPage)
   },
   {
     path: 'settings',

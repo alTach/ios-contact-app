@@ -262,6 +262,14 @@ export class ContactsWorkspaceStore {
     return this.visibleContacts(tab).filter((contact) => contact.id !== this.userProfile?.id);
   }
 
+  favoriteContacts(): ContactCard[] {
+    return this.listContacts('favorites');
+  }
+
+  favoritePreviewContacts(limit = 7): ContactCard[] {
+    return this.favoriteContacts().slice(0, limit);
+  }
+
   recentSource(contact: ContactCard): string {
     const sources = ['Telegram', 'WhatsApp', 'Skype', 'Звонок на номер 1', 'Звонок на номер 2', 'eSIM'];
     return sources[contact.id % sources.length];
