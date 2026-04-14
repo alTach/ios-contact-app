@@ -1,0 +1,17 @@
+<div class="search-toolbar">
+  <ion-searchbar
+    [animated]="true"
+    [type]="type()"
+    [inputmode]="inputmode()"
+    [placeholder]="placeholder()"
+    [value]="value()"
+    (ionInput)="handleValueInput($any($event.target).value)"
+    (ionFocus)="handleFocus()"
+    (ionBlur)="handleBlur()"
+    show-clear-button="focus"
+  ></ion-searchbar>
+
+  @if (cancelVisible) {
+    <button class="search-toolbar__cancel" type="button" (click)="handleCancel()">Отменить</button>
+  }
+</div>

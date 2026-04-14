@@ -1,5 +1,5 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar class="contacts-top-toolbar" [class.contacts-top-toolbar--hidden]="contactsSearchMode">
     <ion-buttons slot="start">
       <ion-button fill="clear" (click)="goBackToSources()" aria-label="Списки">
         <ion-icon slot="start" name="chevron-back-outline"></ion-icon>
@@ -70,24 +70,26 @@
       </div>
     </ion-toolbar>
   } @else if (store.searchOpen) {
-    <ion-toolbar class="contacts-search-toolbar">
-      <ion-searchbar
-        #searchInput
-        [animated]="true"
+    <ion-toolbar class="contacts-search-toolbar" [class.contacts-search-toolbar--searching]="contactsSearchMode">
+      <app-search-toolbar
+        [value]="store.searchTerm"
         placeholder="Поиск по ФИО, организации, тегам"
-        [(ngModel)]="store.searchTerm"
-        show-clear-button="focus"
-      ></ion-searchbar>
+        (valueChange)="store.searchTerm = $event"
+        (focusChange)="setSearchFocused($event)"
+        (canceled)="setSearchFocused(false)"
+      ></app-search-toolbar>
     </ion-toolbar>
   }
 </ion-header>
 
 <ion-content [fullscreen]="true" class="shell">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">{{ store.currentContactListTitle() }}</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  @if (!contactsSearchMode) {
+    <ion-header collapse="condense">
+      <ion-toolbar>
+        <ion-title size="large">{{ store.currentContactListTitle() }}</ion-title>
+      </ion-toolbar>
+    </ion-header>
+  }
 
   <app-page-inset>
     <div class="background-glow background-glow-a"></div>
@@ -97,7 +99,12 @@
       [viewMode]="store.viewMode"
       [selectionMode]="store.selectionMode"
       [selectionVersion]="store.selectionVersion"
+      [hideAuxiliary]="contactsSearchMode"
     ></app-contacts-tab-view>
+
+    @if (store.searchTerm.trim().length > 0 && !store.contactSearchResultCount()) {
+      <button class="contacts-directory-link" type="button" (click)="openDirectorySearch()">Найти в справочнике</button>
+    }
   </app-page-inset>
 </ion-content>
 

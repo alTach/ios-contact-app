@@ -17,12 +17,13 @@
       class="add-contact-inline"
       toggleIcon="person-add-outline"
       expandedIcon="person-add-outline"
+      [value]="null"
       [style.visibility]="store.dialNumber ? 'visible' : 'hidden'"
       aria-label="Добавить контакт"
       (ionChange)="handleAddContactSelect($event)"
     >
-      <ion-select-option value="create">Создать контакт</ion-select-option>
-      <ion-select-option value="existing">Добавить в имеющийся</ion-select-option>
+      <ion-select-option value="create">Создать</ion-select-option>
+      <ion-select-option value="existing">+ существующий</ion-select-option>
     </ion-select>
   </div>
 
@@ -46,7 +47,7 @@
             </span>
           </button>
         } @else {
-          <a class="dial-directory-link" routerLink="/tabs/directory">Найти в справочнике</a>
+          <button class="dial-directory-link" type="button" (click)="openDirectorySearch()">Найти в справочнике</button>
         }
       } @else {
         <span class="dial-suggestion-placeholder"></span>
@@ -106,17 +107,19 @@
   <ng-template>
     <ion-header>
       <ion-toolbar>
-        <ion-searchbar
-          type="tel"
-          inputmode="tel"
-          [ngModel]="store.keypadMatchesSearch"
-          (ngModelChange)="store.keypadMatchesSearch = $event"
-          placeholder="Поиск по номеру"
-          show-clear-button="focus"
-        ></ion-searchbar>
+        <ion-title>Номера телефонов</ion-title>
         <ion-buttons slot="end">
           <ion-button (click)="store.closeKeypadMatchesModal()">Отменить</ion-button>
         </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+        <app-search-toolbar
+          type="tel"
+          inputmode="tel"
+          [value]="store.keypadMatchesSearch"
+          placeholder="Поиск по номеру"
+          (valueChange)="store.keypadMatchesSearch = $event"
+        ></app-search-toolbar>
       </ion-toolbar>
     </ion-header>
 
@@ -144,6 +147,60 @@
             </span>
           </button>
         }
+      </div>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<ion-modal [isOpen]="store.keypadExistingContactModalOpen" class="keypad-existing-modal" [initialBreakpoint]="0.94" [breakpoints]="[0, 0.94]" handle="false" (didDismiss)="store.closeKeypadExistingContactModal()">
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="openContactLists()">Списки</ion-button>
+        </ion-buttons>
+        <ion-title>Контакты</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="store.closeKeypadExistingContactModal()">Отмена</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+      <ion-toolbar>
+        <app-search-toolbar
+          [value]="store.keypadExistingContactSearch"
+          placeholder="Поиск по ФИО, организации, тегам"
+          (valueChange)="store.keypadExistingContactSearch = $event"
+        ></app-search-toolbar>
+      </ion-toolbar>
+    </ion-header>
+
+    <ion-content [fullscreen]="true" class="keypad-existing-content">
+      <div class="keypad-existing-layout">
+        <div class="keypad-existing-list">
+          @for (section of store.keypadExistingGroupedContacts(); track section.letter) {
+            <ion-item-group [attr.id]="'keypad-existing-letter-' + section.letter">
+              <div class="extended-section-header">
+                <ion-label class="extended-section-letter">{{ section.letter }}</ion-label>
+                <ion-item-divider class="extended-section-divider"></ion-item-divider>
+              </div>
+
+              @for (contact of section.contacts; track contact.id; let isLast = $last) {
+                <ion-item button detail="false" lines="none" (click)="attachDialNumberToContact(contact.id)">
+                  <app-contact-list-row
+                    [contact]="contact"
+                    [subtitle]="contact.occupation + ' · ' + contact.organization"
+                    [class.contact-list-row--no-divider]="isLast"
+                  ></app-contact-list-row>
+                </ion-item>
+              }
+            </ion-item-group>
+          }
+        </div>
+
+        <aside class="alphabet-rail">
+          @for (letter of store.keypadExistingAlphabet(); track letter) {
+            <button class="alphabet-button" type="button" (click)="jumpToExistingLetter(letter)">{{ letter }}</button>
+          }
+        </aside>
       </div>
     </ion-content>
   </ng-template>

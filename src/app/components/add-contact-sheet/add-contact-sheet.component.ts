@@ -58,6 +58,7 @@ export class AddContactSheetComponent {
   protected activeLabelIndex = 0;
   protected contactPickerOpen = false;
   protected revealDeleteFor: string | null = null;
+  private initialStateSignature = '';
   protected readonly discardButtons = [
     {
       text: 'Отменить изменения',
@@ -97,7 +98,7 @@ export class AddContactSheetComponent {
   }
 
   protected readonly canDismiss = async (_data?: unknown, role?: string): Promise<boolean> => {
-    if (role === 'save' || role === 'discard' || !this.hasAnyValue()) {
+    if (role === 'save' || role === 'discard' || !this.hasUnsavedChanges()) {
       return true;
     }
 
@@ -463,6 +464,10 @@ export class AddContactSheetComponent {
     ].some((value) => value.trim().length > 0);
   }
 
+  private hasUnsavedChanges(): boolean {
+    return this.formStateSignature() !== this.initialStateSignature;
+  }
+
   private nextLabel(field: AddContactLabeledFieldKeyType, index: number): string {
     switch (field) {
       case 'phone':
@@ -490,6 +495,7 @@ export class AddContactSheetComponent {
     this.visibility = {
       notes: true
     };
+    this.initialStateSignature = this.formStateSignature();
   }
 
   private createEmptyDraft(): AddContactDraft {
@@ -529,6 +535,14 @@ export class AddContactSheetComponent {
       customDate: this.rows.customDate.map((row) => row.value.trim()).filter(Boolean).join(' | '),
       closePerson: this.rows.closePerson.map((row) => row.value.trim()).filter(Boolean).join(' | ')
     };
+  }
+
+  private formStateSignature(): string {
+    return JSON.stringify({
+      draft: this.draft,
+      rows: this.rows,
+      visibility: this.visibility
+    });
   }
 
   private updateRowLabel(field: AddContactLabeledFieldKeyType, index: number, label: string): void {

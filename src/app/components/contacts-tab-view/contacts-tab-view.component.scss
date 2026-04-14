@@ -107,3 +107,44 @@ ion-toolbar {
 .favorites-strip__first-name {
   color: tokens.$color-muted;
 }
+
+.search-results-header {
+  padding: 10px 0 6px;
+}
+
+.search-results-header__title {
+  color: tokens.$color-muted;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.search-result-snippet {
+  display: block;
+  min-width: 0;
+}
+
+.search-result-snippet__label,
+.search-result-snippet__text {
+  color: tokens.$color-muted;
+}
+
+.search-result-snippet__label {
+  margin-right: 4px;
+}
+
+.search-result-snippet__text {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.search-result-snippet__match {
+  color: tokens.$color-ink;
+}
+
+.search-result-snippet__ellipsis {
+  color: tokens.$color-muted;
+}

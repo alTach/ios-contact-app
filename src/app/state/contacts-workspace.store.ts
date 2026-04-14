@@ -3,6 +3,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 import { AppDataRepository } from '../data/app-data.repository';
 import { AddContactDraft, ContactCard, DirectoryEntry } from '../data/app-data.models';
+import { ContactSearchResult, ContactSearchSection, ContactSearchSnippet } from './trash/contact-search.models';
 
 export type ContactsTabKey = 'favorites' | 'recent' | 'contacts';
 export type FilterKey = 'all' | 'incoming' | 'outgoing' | 'missed' | 'unknown' | 'long';
@@ -31,6 +32,12 @@ export interface PortalCard {
   actions: PortalAction[];
 }
 
+interface ContactSearchFieldCandidate {
+  label: string;
+  value: string;
+  priority: 'best' | 'other';
+}
+
 @Injectable({ providedIn: 'root' })
 export class ContactsWorkspaceStore {
   private readonly repository = inject(AppDataRepository);
@@ -48,11 +55,14 @@ export class ContactsWorkspaceStore {
   addContactModalOpen = false;
   addContactPrefillPhone = '';
   directorySearch = '';
+  pendingDirectorySearch = '';
   dialNumber = '';
   activeCallSource = 'SIM 1';
   addContactPressed = false;
   keypadMatchesModalOpen = false;
   keypadMatchesSearch = '';
+  keypadExistingContactModalOpen = false;
+  keypadExistingContactSearch = '';
   sheetOpen = false;
   selectedIds = new Set<number>();
   selectionVersion = 0;
@@ -120,6 +130,21 @@ export class ContactsWorkspaceStore {
 
   setDataSource(source: ContactSourceKey): void {
     this.activeDataSource = source;
+  }
+
+  setDirectorySearch(value: string): void {
+    this.directorySearch = value;
+  }
+
+  queueDirectorySearch(value: string): void {
+    this.pendingDirectorySearch = value;
+    this.directorySearch = value;
+  }
+
+  consumePendingDirectorySearch(): string {
+    const value = this.pendingDirectorySearch;
+    this.pendingDirectorySearch = '';
+    return value;
   }
 
   setActiveContactList(listId: string): void {
@@ -301,13 +326,43 @@ export class ContactsWorkspaceStore {
     return [...grouped.entries()].map(([letter, contacts]) => ({ letter, contacts }));
   }
 
+  contactSearchSections(): ContactSearchSection[] {
+    const query = this.searchTerm.trim().toLowerCase();
+    if (!query) {
+      return [];
+    }
+
+    const results = this.contactSearchCandidates()
+      .map((contact) => this.buildContactSearchResult(contact, query))
+      .filter((result): result is ContactSearchResult => result !== null);
+
+    const bestResults = results.filter((result) => result.priority === 'best');
+    const otherResults = results.filter((result) => result.priority === 'other');
+    const sections: ContactSearchSection[] = [];
+
+    if (bestResults.length) {
+      sections.push({ title: 'Лучшие совпадения', results: bestResults });
+    }
+
+    if (otherResults.length) {
+      sections.push({ title: 'Другие результаты', results: otherResults });
+    }
+
+    return sections;
+  }
+
+  contactSearchResultCount(): number {
+    return this.contactSearchSections().reduce((count, section) => count + section.results.length, 0);
+  }
+
   filteredDirectory(): DirectoryEntry[] {
     const term = this.directorySearch.trim().toLowerCase();
+    const digits = term.replace(/\D/g, '');
     return this.directoryEntries.filter((entry) => {
       if (!term) {
         return true;
       }
-      return [
+      const textMatch = [
         entry.category,
         entry.name,
         entry.department,
@@ -316,6 +371,8 @@ export class ContactsWorkspaceStore {
         entry.city,
         entry.tags.join(' ')
       ].join(' ').toLowerCase().includes(term);
+      const phoneMatch = digits ? entry.phone.replace(/\D/g, '').includes(digits) : false;
+      return textMatch || phoneMatch;
     });
   }
 
@@ -420,6 +477,60 @@ export class ContactsWorkspaceStore {
     return this.listContacts('contacts')
       .filter((contact) => this.contactPhoneDigits(contact).includes(query))
       .slice(0, 12);
+  }
+
+  openKeypadExistingContactModal(): void {
+    this.keypadExistingContactSearch = '';
+    this.keypadExistingContactModalOpen = true;
+  }
+
+  closeKeypadExistingContactModal(): void {
+    this.keypadExistingContactModalOpen = false;
+    this.keypadExistingContactSearch = '';
+  }
+
+  keypadExistingGroupedContacts(): Array<{ letter: string; contacts: ContactCard[] }> {
+    const contacts = this.filteredContactsForSearch(this.keypadExistingContactSearch, this.listContacts('contacts'));
+    const grouped = new Map<string, ContactCard[]>();
+
+    for (const contact of contacts) {
+      const letter = this.getLetter(contact);
+      const collection = grouped.get(letter) ?? [];
+      collection.push(contact);
+      grouped.set(letter, collection);
+    }
+
+    return [...grouped.entries()].map(([letter, items]) => ({ letter, contacts: items }));
+  }
+
+  keypadExistingAlphabet(): string[] {
+    const contacts = this.filteredContactsForSearch(this.keypadExistingContactSearch, this.listContacts('contacts'));
+    return [...new Set(contacts.map((contact) => this.getLetter(contact)))];
+  }
+
+  attachDialNumberToContact(contactId: number): void {
+    const normalizedNumber = this.normalizedDialNumber();
+    if (!normalizedNumber) {
+      return;
+    }
+
+    const formattedNumber = this.formatPhoneNumber(normalizedNumber);
+    this.contacts = this.contacts.map((contact) => {
+      if (contact.id !== contactId) {
+        return contact;
+      }
+
+      const phones = contact.phones ?? [];
+      if (phones.includes(formattedNumber)) {
+        return contact;
+      }
+
+      return {
+        ...contact,
+        phones: [...phones, formattedNumber]
+      };
+    });
+    this.closeKeypadExistingContactModal();
   }
 
   fillDialFromContact(contact: ContactCard): void {
@@ -566,6 +677,16 @@ export class ContactsWorkspaceStore {
     return contact.id % 2 === 0 || contact.callType !== 'missed';
   }
 
+  private contactSearchCandidates(): ContactCard[] {
+    return this.baseContacts('contacts')
+      .filter((contact) => {
+        const matchesGroup = this.activeGroup === 'Все' || contact.group === this.activeGroup;
+        const matchesContactList = this.contactListIdForContact(contact) === this.activeContactListId;
+        return matchesGroup && matchesContactList;
+      })
+      .filter((contact) => contact.id !== this.userProfile?.id);
+  }
+
   private getLetter(contact: ContactCard): string {
     return contact.lastName.slice(0, 1).toUpperCase();
   }
@@ -602,6 +723,24 @@ export class ContactsWorkspaceStore {
     const p4 = trimmed.slice(9, 11);
 
     return `+${country} ${p1}${p2 ? ` ${p2}` : ''}${p3 ? `-${p3}` : ''}${p4 ? `-${p4}` : ''}`.trim();
+  }
+
+  private filteredContactsForSearch(term: string, contacts: ContactCard[]): ContactCard[] {
+    const normalizedTerm = term.trim().toLowerCase();
+    if (!normalizedTerm) {
+      return contacts;
+    }
+
+    return contacts.filter((contact) => [
+      contact.fullName,
+      contact.organization,
+      contact.occupation,
+      contact.city,
+      contact.tags.join(' '),
+      contact.note,
+      ...(contact.phones ?? []),
+      ...(contact.emails ?? [])
+    ].join(' ').toLowerCase().includes(normalizedTerm));
   }
 
   private contactListIdForContact(contact: ContactCard): string {
@@ -649,5 +788,78 @@ export class ContactsWorkspaceStore {
 
   private bumpSelectionVersion(): void {
     this.selectionVersion += 1;
+  }
+
+  private buildContactSearchResult(contact: ContactCard, query: string): ContactSearchResult | null {
+    const fieldCandidates = this.contactSearchFieldCandidates(contact);
+
+    for (const candidate of fieldCandidates) {
+      const snippet = this.createContactSearchSnippet(candidate.value, query);
+      if (!snippet) {
+        continue;
+      }
+
+      return {
+        contact,
+        fieldLabel: candidate.label,
+        snippet,
+        priority: candidate.priority
+      };
+    }
+
+    return null;
+  }
+
+  private contactSearchFieldCandidates(contact: ContactCard): ContactSearchFieldCandidate[] {
+    return [
+      { label: 'Фамилия', value: contact.lastName, priority: 'best' },
+      { label: 'Имя', value: contact.firstName, priority: 'best' },
+      { label: 'Отчество', value: contact.middleName, priority: 'best' },
+      { label: 'ФИО', value: contact.fullName, priority: 'best' },
+      { label: 'Компания', value: contact.organization, priority: 'best' },
+      { label: 'Должность', value: contact.occupation, priority: 'other' },
+      { label: 'Город', value: contact.city, priority: 'other' },
+      { label: 'Метки', value: contact.tags.join(', '), priority: 'other' },
+      { label: 'Заметка', value: contact.note, priority: 'other' },
+      { label: 'Телефон', value: (contact.phones ?? []).join(', '), priority: 'other' },
+      { label: 'Email', value: (contact.emails ?? []).join(', '), priority: 'other' },
+      { label: 'URL', value: (contact.urls ?? []).join(', '), priority: 'other' },
+      { label: 'Близкий', value: contact.closePerson ?? '', priority: 'other' },
+      { label: 'Дата', value: contact.customDate ?? '', priority: 'other' },
+      {
+        label: 'Адрес',
+        value: contact.address ? [contact.address.street, contact.address.city, contact.address.region, contact.address.country, contact.address.postalCode].filter(Boolean).join(', ') : '',
+        priority: 'other'
+      }
+    ];
+  }
+
+  private createContactSearchSnippet(value: string, query: string): ContactSearchSnippet | null {
+    const normalizedValue = value.trim();
+    if (!normalizedValue) {
+      return null;
+    }
+
+    const lowerValue = normalizedValue.toLowerCase();
+    const matchIndex = lowerValue.indexOf(query);
+    if (matchIndex < 0) {
+      return null;
+    }
+
+    const beforeContextLength = 18;
+    const afterContextLength = 44;
+    const snippetStart = Math.max(0, matchIndex - beforeContextLength);
+    const snippetEnd = Math.min(normalizedValue.length, matchIndex + query.length + afterContextLength);
+    const prefix = normalizedValue.slice(snippetStart, matchIndex).trimStart();
+    const match = normalizedValue.slice(matchIndex, matchIndex + query.length);
+    const suffix = normalizedValue.slice(matchIndex + query.length, snippetEnd).trimEnd();
+
+    return {
+      prefix,
+      match,
+      suffix,
+      leadingEllipsis: snippetStart > 0,
+      trailingEllipsis: snippetEnd < normalizedValue.length
+    };
   }
 }

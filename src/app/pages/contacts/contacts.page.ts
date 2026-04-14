@@ -5,6 +5,7 @@ import { IonPopover, IonicModule, NavController } from '@ionic/angular';
 
 import { AddContactSheetComponent } from '../../components/add-contact-sheet/add-contact-sheet.component';
 import { ContactsTabViewComponent } from '../../components/contacts-tab-view/contacts-tab-view.component';
+import { SearchToolbarComponent } from '../../components/search-toolbar/search-toolbar.component';
 import { AddContactDraft } from '../../data/app-data.models';
 import { PageInsetComponent } from '../../components/page-inset/page-inset.component';
 import { ContactsWorkspaceStore, ViewMode } from '../../state/contacts-workspace.store';
@@ -12,7 +13,7 @@ import { ContactsWorkspaceStore, ViewMode } from '../../state/contacts-workspace
 @Component({
   selector: 'app-contacts-page',
   standalone: true,
-  imports: [IonicModule, FormsModule, RouterLink, AddContactSheetComponent, ContactsTabViewComponent, PageInsetComponent],
+  imports: [IonicModule, FormsModule, RouterLink, AddContactSheetComponent, ContactsTabViewComponent, PageInsetComponent, SearchToolbarComponent],
   templateUrl: './contacts.page.html',
   styleUrls: ['./contacts.page.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush
@@ -22,6 +23,7 @@ export class ContactsPage {
   @ViewChild('selectionMenuPopover') private selectionMenuPopover?: IonPopover;
 
   readonly store = inject(ContactsWorkspaceStore);
+  searchFocused = false;
 
   private readonly cdr = inject(ChangeDetectorRef);
 
@@ -68,7 +70,21 @@ export class ContactsPage {
     this.cdr.markForCheck();
   };
 
+  setSearchFocused(value: boolean): void {
+    this.searchFocused = value;
+    this.cdr.markForCheck();
+  }
+
+  openDirectorySearch(): void {
+    this.store.queueDirectorySearch(this.store.searchTerm);
+    void this.navController.navigateForward('/tabs/directory');
+  }
+
   get showBackLabel(): boolean {
     return this.store.currentContactListTitle().length <= 7;
+  }
+
+  get contactsSearchMode(): boolean {
+    return this.searchFocused || this.store.searchTerm.trim().length > 0;
   }
 }

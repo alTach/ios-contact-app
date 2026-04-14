@@ -41,6 +41,10 @@
   background: tokens.$contact-divider-color;
 }
 
+:host(.contact-list-row--no-divider) .contact-list-row__body::after {
+  display: none;
+}
+
 .contact-list-row__title {
   overflow: hidden;
   color: tokens.$color-ink;

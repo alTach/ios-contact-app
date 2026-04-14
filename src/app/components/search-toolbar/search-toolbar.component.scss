@@ -1,0 +1,57 @@
+@use '../../shared/tokens' as tokens;
+
+:host {
+  display: block;
+  width: 100%;
+}
+
+.search-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+}
+
+ion-searchbar {
+  --background: #eef0f3;
+  --box-shadow: none;
+  --border-radius: 12px;
+  --color: #15181f;
+  --placeholder-color: #6d7482;
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding-inline: 0;
+}
+
+ion-searchbar::part(container) {
+  min-height: 44px;
+  padding-inline: 12px;
+}
+
+ion-searchbar::part(search-icon) {
+  color: #6d7482;
+  margin-inline-end: 8px;
+}
+
+ion-searchbar::part(input) {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.search-toolbar__cancel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: tokens.$color-ink;
+  font-size: 16px;
+  line-height: 1;
+  white-space: nowrap;
+}

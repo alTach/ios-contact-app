@@ -2,13 +2,11 @@
   <section class="toolbar-card">
     @if (!isContactsTab) {
       <div class="search-wrap" [class.open]="store.searchOpen">
-        <ion-searchbar
-          #searchInput
-          [animated]="true"
+        <app-search-toolbar
+          [value]="store.searchTerm"
           placeholder="Поиск по ФИО, организации, тегам"
-          [(ngModel)]="store.searchTerm"
-          show-clear-button="focus"
-        ></ion-searchbar>
+          (valueChange)="store.searchTerm = $event"
+        ></app-search-toolbar>
       </div>
     }
 
@@ -33,7 +31,7 @@
     <div class="inline-feedback">Новая карточка контакта может открыться здесь или через отдельную форму создания.</div>
   }
 
-  @if (isContactsTab && store.activePortalCard(); as card) {
+  @if (isContactsTab && !hideAuxiliary() && store.activePortalCard(); as card) {
     <article class="portal-card">
       <div class="portal-card__header">
         <h3>{{ card.title }}</h3>
@@ -55,7 +53,7 @@
     </article>
   }
 
-  @if (isContactsTab) {
+  @if (isContactsTab && !hideAuxiliary()) {
     <section class="favorites-strip">
       @for (contact of favoritePreviewContacts; track contact.id) {
         <button class="favorites-strip__item" type="button" (click)="handleContactPress(contact.id)">
@@ -83,7 +81,46 @@
 
   <div class="list-layout">
     <div class="contact-sections">
-      @if (viewMode() === 'simple') {
+      @if (isContactSearchActive) {
+        @for (section of searchSections; track section.title) {
+          <ion-item-group>
+            <div class="search-results-header">
+              <ion-label class="search-results-header__title">{{ section.title }}</ion-label>
+            </div>
+
+            @for (result of section.results; track result.contact.id; let isLast = $last) {
+              <ion-item
+                button
+                detail="false"
+                (click)="handleContactPress(result.contact.id)"
+              >
+                <app-contact-list-row
+                  [contact]="result.contact"
+                  [selectionMode]="selectionMode()"
+                  [selected]="store.isSelected(result.contact.id)"
+                  [class.contact-list-row--no-divider]="isLast"
+                  (selectionToggle)="store.toggleSelection(result.contact.id)"
+                >
+                  <span contact-row-subtitle class="search-result-snippet">
+                    <span class="search-result-snippet__label">{{ result.fieldLabel }}</span>
+                    <span class="search-result-snippet__text">
+                      @if (result.snippet.leadingEllipsis) {
+                        <span class="search-result-snippet__ellipsis">...</span>
+                      }
+                      <span>{{ result.snippet.prefix }}</span>
+                      <span class="search-result-snippet__match">{{ result.snippet.match }}</span>
+                      <span>{{ result.snippet.suffix }}</span>
+                      @if (result.snippet.trailingEllipsis) {
+                        <span class="search-result-snippet__ellipsis">...</span>
+                      }
+                    </span>
+                  </span>
+                </app-contact-list-row>
+              </ion-item>
+            }
+          </ion-item-group>
+        }
+      } @else if (viewMode() === 'simple') {
         @for (section of store.groupedListContacts(tab()); track section.letter) {
           <ion-item-group [attr.id]="'letter-' + section.letter">
             <div class="extended-section-header">
@@ -139,17 +176,18 @@
       }
     </div>
 
-
-    <aside class="alphabet-rail">
-      @for (letter of store.alphabet; track letter) {
-        <button
-          class="alphabet-button"
-          (click)="store.jumpToLetter(letter)"
-        >
-          {{ letter }}
-        </button>
-      }
-    </aside>
+    @if (!isContactSearchActive) {
+      <aside class="alphabet-rail">
+        @for (letter of store.alphabet; track letter) {
+          <button
+            class="alphabet-button"
+            (click)="store.jumpToLetter(letter)"
+          >
+            {{ letter }}
+          </button>
+        }
+      </aside>
+    }
   </div>
 
   <p class="contacts-bottom-count">{{ bottomCountLabel }}</p>

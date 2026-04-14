@@ -18,9 +18,17 @@
 }
 
 .dial-source-select {
-  min-width: 110px;
+  min-width: 84px;
   --padding-start: 0;
-  --padding-end: 24px;
+  --padding-end: 18px;
+}
+
+.dial-source-select::part(text) {
+  font-size: 14px;
+}
+
+.dial-source-select::part(icon) {
+  font-size: 16px;
 }
 
 .add-contact-inline {
@@ -218,14 +226,35 @@
   --border-color: rgba(21, 24, 31, 0.08);
 }
 
-.keypad-matches-modal ion-searchbar {
-  --background: #eef0f3;
-  --box-shadow: none;
-  --border-radius: 12px;
-  --color: #{tokens.$color-ink};
-  --placeholder-color: #{tokens.$color-muted};
-  padding-inline-start: 0;
-  padding-inline-end: 8px;
+.keypad-existing-modal ion-toolbar {
+  --background: #ffffff;
+  --border-color: rgba(21, 24, 31, 0.08);
+}
+
+.keypad-matches-modal ion-toolbar:last-of-type,
+.keypad-existing-modal ion-toolbar:last-of-type {
+  --padding-start: 12px;
+  --padding-end: 12px;
+}
+
+.keypad-existing-content {
+  --background: #ffffff;
+}
+
+.keypad-existing-layout {
+  display: flex;
+  gap: 8px;
+  padding: 8px 0 calc(28px + env(safe-area-inset-bottom, 0px));
+}
+
+.keypad-existing-list {
+  flex: 1;
+  min-width: 0;
+}
+
+.keypad-existing-list ion-item {
+  --inner-border-width: 0;
+  --border-width: 0;
 }
 
 .keypad-matches-sheet {
