@@ -38,6 +38,11 @@ export class DirectoryPage implements AfterViewInit {
     this.cdr.markForCheck();
   }
 
+  resetDirectorySearch(): void {
+    this.store.directorySearch = '';
+    this.setSearchFocused(false);
+  }
+
   get directorySearchMode(): boolean {
     return this.searchFocused || this.store.directorySearch.trim().length > 0;
   }

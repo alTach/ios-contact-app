@@ -1,14 +1,14 @@
 <ion-header [translucent]="true">
-  <ion-toolbar class="directory-top-toolbar" [class.directory-top-toolbar--hidden]="directorySearchMode">
-    <ion-title>Справочник</ion-title>
-  </ion-toolbar>
+<!--  <ion-toolbar class="directory-top-toolbar" [class.directory-top-toolbar&#45;&#45;hidden]="directorySearchMode">-->
+<!--    <ion-title>Справочник</ion-title>-->
+<!--  </ion-toolbar>-->
   <ion-toolbar class="directory-search-toolbar" [class.directory-search-toolbar--searching]="directorySearchMode">
     <app-search-toolbar
       [value]="store.directorySearch"
       placeholder="Поиск по организациям"
       (valueChange)="store.directorySearch = $event"
       (focusChange)="setSearchFocused($event)"
-      (canceled)="setSearchFocused(false)"
+      (canceled)="resetDirectorySearch()"
     ></app-search-toolbar>
   </ion-toolbar>
 </ion-header>

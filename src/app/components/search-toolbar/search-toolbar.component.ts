@@ -42,6 +42,7 @@ export class SearchToolbarComponent {
   handleCancel(): void {
     this.cancelVisible = false;
     this.focusChange.emit(false);
+    this.valueChange.emit('');
     this.canceled.emit();
     void this.searchbar?.getInputElement().then((inputElement) => inputElement.blur());
   }
