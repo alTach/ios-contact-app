@@ -77,6 +77,6 @@ export class ContactsTabViewComponent {
       return;
     }
 
-    void this.router.navigate(['/contact', contactId]);
+    void this.router.navigate(['/tabs/contact/list', contactId]);
   }
 }

@@ -34,6 +34,10 @@ export const appRoutes: Routes = [
       {
         path: 'keypad',
         loadComponent: () => import('./pages/keypad/keypad.page').then((module) => module.KeypadPage)
+      },
+      {
+        path: 'contact/list/:id',
+        loadComponent: () => import('./pages/contact-detail/contact-detail.page').then((module) => module.ContactDetailPage)
       }
     ]
   },
@@ -44,10 +48,6 @@ export const appRoutes: Routes = [
   {
     path: 'settings',
     loadComponent: () => import('./pages/settings/settings.page').then((module) => module.SettingsPage)
-  },
-  {
-    path: 'contact/:id',
-    loadComponent: () => import('./pages/contact-detail/contact-detail.page').then((module) => module.ContactDetailPage)
   },
   {
     path: '**',
