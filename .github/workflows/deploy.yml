@@ -35,7 +35,7 @@ jobs:
         run: npm ci
 
       - name: Build Application
-        run: npx ng build --configuration production --base-href https://altach.github.io/ios-contact-app
+        run: npx ng build --configuration production --base-href https://altach.github.io/ios-contact-app/
 
       # Фикс для роутинга Angular (чтобы при обновлении страницы на GitHub Pages не было ошибки 404)
       - name: Copy index.html to 404.html
